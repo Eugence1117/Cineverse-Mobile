@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/movieFragment"
+        android:enabled="true"
+        android:icon="@drawable/round_movie_black_24dp"
+        android:title="@string/movieLabel"/>
+    <item
+        android:id="@+id/branchFragment"
+        android:enabled="true"
+        android:icon="@drawable/round_store_black_24dp"
+        android:title="@string/cinemaLabel"/>
+    <item
+        android:id="@+id/ticketFragment"
+        android:enabled="true"
+        android:icon="@drawable/round_confirmation_number_black_24dp"
+        android:title="@string/ticketLabel"/>
+    <item
+        android:id="@+id/profileFragment"
+        android:enabled="true"
+        android:icon="@drawable/round_person_black_24dp"
+        android:title="@string/profileLabel"/>
+</menu>
