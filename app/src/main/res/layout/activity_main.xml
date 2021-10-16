@@ -46,22 +46,34 @@
                     android:layout_height="0dp"
                     app:defaultNavHost="true"
                     android:layout_marginTop="?android:attr/actionBarSize"
-                    app:layout_constraintBottom_toTopOf="@id/botNavigationView"
+                    app:layout_constraintBottom_toTopOf="@id/bottomLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:navGraph="@navigation/nav" />
 
-                <com.google.android.material.bottomnavigation.BottomNavigationView
-                    android:id="@+id/botNavigationView"
+                <androidx.coordinatorlayout.widget.CoordinatorLayout
+                    android:id="@+id/bottomLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/empty_background"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:menu="@menu/bottom_navigation" />
+                    app:layout_constraintStart_toStartOf="parent">
 
+                    <com.google.android.material.bottomappbar.BottomAppBar
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.bottomnavigation.BottomNavigationView
+                            android:id="@+id/botNavigationView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/empty_background"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:menu="@menu/bottom_navigation" />
+                    </com.google.android.material.bottomappbar.BottomAppBar>
+                </androidx.coordinatorlayout.widget.CoordinatorLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 

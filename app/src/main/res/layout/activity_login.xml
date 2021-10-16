@@ -85,6 +85,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/passwordLabel"
                     android:layout_marginVertical="5dp"
+                    app:passwordToggleEnabled="true"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText

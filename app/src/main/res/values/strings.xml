@@ -50,5 +50,8 @@
     <string name="birthdateLabel">Birth Date</string>
     <string name="emailLabel">Email Address</string>
     <string name="term_condition">I have read and agreed to Cineverse\' Terms &amp; Conditions and Privacy Policy.</string>
+    <string name="changePwLabel">Change Password</string>
+    <string name="deleteAccLabel">Delete Account</string>
+    <string name="applyChangeLabel">Apply Changes</string>
     1
 </resources>

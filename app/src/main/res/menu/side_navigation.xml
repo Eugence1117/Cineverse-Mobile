@@ -12,4 +12,8 @@
         android:id="@+id/settingButton"
         android:title="Settings"
         android:icon="@drawable/baseline_settings_24dp"/>
+    <item android:enabled="true"
+        android:id="@+id/logoutButton"
+        android:title="Log out"
+        android:icon="@drawable/baseline_logout_black_24dp"/>
 </menu>

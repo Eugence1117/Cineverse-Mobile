@@ -145,26 +145,39 @@ class LoginActivity : AppCompatActivity() {
             },
             Response.ErrorListener { error ->
                 finishLoading()
-                Log.e("HttpClient", "error: $error")
-                try{
-                    val responseCode = error.networkResponse.statusCode
-                    when (responseCode) {
-                        HttpURLConnection.HTTP_NOT_FOUND -> {
-                            Toast.makeText(this,"Unable to locate the service you request. Please try again later.",Toast.LENGTH_SHORT).show()
-                        }
-                        HttpURLConnection.HTTP_INTERNAL_ERROR -> {
-                            Toast.makeText(this,"Unknown error occurred. Please try again later.",Toast.LENGTH_SHORT).show()
-                        }
-                        HttpURLConnection.HTTP_UNAUTHORIZED -> {
-                            Toast.makeText(this,"Account not found. Please try again.",Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    binding.usernameInput.requestFocus()
-                    queue.stop()
+                Log.e(TAG,error.stackTraceToString())
+                if (error is TimeoutError || error is NoConnectionError) {
+                    Toast.makeText(this, "Request timed out. Please try again later.",Toast.LENGTH_LONG).show()
+                } else if (error is AuthFailureError) {
+                    Toast.makeText(this,"Unable to identify your identity. Please try again later.",Toast.LENGTH_LONG).show()
+                } else if (error is ServerError) {
+                    Toast.makeText(this,"Unexpected error occurred. Please try again later.",Toast.LENGTH_LONG).show()
+                } else if (error is NetworkError) {
+                    Toast.makeText(this,"Unexpected error occurred. Please try again later.",Toast.LENGTH_LONG).show()
+                } else if (error is ParseError) {
+                    Toast.makeText(this,"Received unexpected response from server. Please try again later.",Toast.LENGTH_LONG).show()
                 }
-                catch(ex:Exception){
-                    Log.e(TAG,ex.stackTraceToString())
-                    Toast.makeText(this,"Unexpected error occurred. Please try again later.",Toast.LENGTH_SHORT).show()
+                else{
+                    try{
+                        val responseCode = error.networkResponse.statusCode
+                        when (responseCode) {
+                            HttpURLConnection.HTTP_NOT_FOUND -> {
+                                Toast.makeText(this,"Unable to locate the service you request. Please try again later.",Toast.LENGTH_SHORT).show()
+                            }
+                            HttpURLConnection.HTTP_INTERNAL_ERROR -> {
+                                Toast.makeText(this,"Unknown error occurred. Please try again later.",Toast.LENGTH_SHORT).show()
+                            }
+                            HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                                Toast.makeText(this,"Account not found. Please try again.",Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        binding.usernameInput.requestFocus()
+                        queue.stop()
+                    }
+                    catch(ex:Exception){
+                        Log.e(TAG,ex.stackTraceToString())
+                        Toast.makeText(this,"Unexpected error occurred. Please try again later.",Toast.LENGTH_SHORT).show()
+                    }
                 }
             }) {
             override fun getParams(): Map<String, String>? {
