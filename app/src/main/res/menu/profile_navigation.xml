@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/changePassword"
+        android:enabled="true"
+        android:title="@string/changePwLabel"/>
+    <item
+        android:id="@+id/deleteAccount"
+        android:enabled="true"
+        android:title="@string/deleteAccLabel"/>
+</menu>

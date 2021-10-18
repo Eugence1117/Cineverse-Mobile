@@ -53,5 +53,9 @@
     <string name="changePwLabel">Change Password</string>
     <string name="deleteAccLabel">Delete Account</string>
     <string name="applyChangeLabel">Apply Changes</string>
+    <string name="editProfileBtn">Edit Profile</string>
+    <string name="edit_profile_title">Edit Profile</string>
+    <string name="oldPasswordLabel">Current Password</string>
+    <string name="newPasswordLabel">New Password</string>
     1
 </resources>

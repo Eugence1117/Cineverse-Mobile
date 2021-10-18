@@ -4,20 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".member.ProfileFragment"
     android:orientation="vertical">
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progress"
-        android:indeterminate="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
     <ScrollView
-        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="8dp"
@@ -43,7 +32,8 @@
                     android:layout_width="125dp"
                     android:layout_height="125dp"
                     android:layout_gravity="center"
-                    android:padding="10dp">
+                    android:layout_margin="10dp"
+                    android:background="@color/light_transparent">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/profilePic"
@@ -51,7 +41,7 @@
                         android:layout_height="match_parent"
                         android:clickable="true"
                         android:focusable="true"
-                        app:srcCompat="@drawable/baseline_account_circle_grey_300_48dp" />
+                        />
                 </RelativeLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -65,8 +55,8 @@
                         style="?attr/textAppearanceHeadline6"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingVertical="5dp"
-                        android:text="undefined"
+                        android:layout_marginVertical="5dp"
+                        android:background="@color/light_transparent"
                         android:textAlignment="center"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -74,12 +64,10 @@
 
                     <TextView
                         android:id="@+id/email"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="undefined"
-                        android:drawableLeft="@drawable/baseline_email_grey_400_18dp"
-                        android:drawablePadding="5dp"
-                        android:paddingVertical="5dp"
+                        android:background="@color/light_transparent"
+                        android:layout_marginVertical="5dp"
                         android:textAlignment="center"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -87,13 +75,10 @@
 
                     <TextView
                         android:id="@+id/joinDate"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/baseline_calendar_today_grey_400_18dp"
-                        android:drawablePadding="5dp"
-                        android:textAlignment="center"
-                        android:text="Joined On: undefined"
-                        android:paddingVertical="5dp"
+                        android:background="@color/light_transparent"
+                        android:layout_marginVertical="5dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/email" />
@@ -121,36 +106,15 @@
                     style="?attr/textAppearanceHeadline6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Last Purchase"
-                    android:drawableLeft="@drawable/baseline_payment_black_24dp"
-                    android:drawablePadding="10dp"
-                    />
+                    android:background="@color/light_transparent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="10dp">
+                    android:padding="10dp"
+                    android:background="@color/light_transparent">
 
-                    <ImageView
-                        android:id="@+id/emptyLogo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="parent"
 
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/outline_receipt_grey_400_18dp" />
-
-                    <TextView
-                        android:id="@+id/textView6"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="No purchase made yet"
-                        android:textAlignment="center"
-                        android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/emptyLogo" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
@@ -161,20 +125,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginVertical="10dp"
+                android:background="@color/light_transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/editProfileBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/editProfileBtn"
-                    app:icon="@drawable/baseline_edit_white_24dp"
-                    app:iconGravity="textStart"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

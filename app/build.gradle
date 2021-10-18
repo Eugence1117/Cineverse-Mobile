@@ -14,7 +14,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -33,6 +33,7 @@ android {
         jvmTarget = '1.8'
     }
     buildFeatures {
+        dataBinding true
         viewBinding true
     }
 }
@@ -43,7 +44,10 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation("ch.acra:acra-mail:5.8.3")
     implementation("ch.acra:acra-dialog:5.8.3")
+    implementation 'com.ethanhua:skeleton:1.1.2'
+    implementation 'io.supercharge:shimmerlayout:2.1.0'
 
+    implementation 'com.android.databinding:compiler:3.0.1'
     implementation 'net.steamcrafted:materialiconlib:1.1.5'
     //noinspection GradleCompatible
     implementation "com.android.support:appcompat-v7:23.2.0"

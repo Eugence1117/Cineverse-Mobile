@@ -19,4 +19,5 @@
     <color name="dark_secondaryTextColor">#ffffff</color>
 
     <color name="dangerColor">#dc3545</color>
+    <color name="grayColor">#353535</color>
 </resources>

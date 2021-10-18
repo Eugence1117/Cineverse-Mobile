@@ -11,13 +11,13 @@ import com.android.volley.toolbox.ImageLoader
 import com.android.volley.toolbox.Volley
 import com.squareup.picasso.Picasso
 
-class MySingleton constructor(context: Context) {
+class Singleton constructor(context: Context) {
     companion object {
         @Volatile
-        private var INSTANCE: MySingleton? = null
+        private var INSTANCE: Singleton? = null
         fun getInstance(context: Context) =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: MySingleton(context).also {
+                INSTANCE ?: Singleton(context).also {
                     INSTANCE = it
                 }
             }

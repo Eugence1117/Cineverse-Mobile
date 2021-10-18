@@ -122,26 +122,6 @@ class LoginActivity : AppCompatActivity() {
                 finish()
 
                 queue.stop()
-//                            val queue = Volley.newRequestQueue(this@LoginActivity)
-//
-//                            val req: JsonObjectRequest = object : JsonObjectRequest(
-//                                Method.GET, "$domain/api/getCredential",
-//                                null,
-//                                Response.Listener { response ->
-//                                    Toast.makeText(this,"Your ID is ${response.get("userId")}",Toast.LENGTH_SHORT).show()
-//                                    Log.i("HttpClient", response.toString())
-//                                },
-//                                Response.ErrorListener { error ->
-//                                    Log.e(TAG,error.stackTraceToString())
-//                                }) {
-//                                @Throws(AuthFailureError::class)
-//                                override fun getHeaders(): Map<String, String> {
-//                                    val headers = HashMap<String, String>()
-//                                    MySingleton.getInstance(this@LoginActivity).addSessionCookie(headers)
-//                                    return headers
-//                                }
-//                            }
-//                            queue.add(req)
             },
             Response.ErrorListener { error ->
                 finishLoading()
@@ -149,18 +129,23 @@ class LoginActivity : AppCompatActivity() {
                 if (error is TimeoutError || error is NoConnectionError) {
                     Toast.makeText(this, "Request timed out. Please try again later.",Toast.LENGTH_LONG).show()
                 } else if (error is AuthFailureError) {
-                    Toast.makeText(this,"Unable to identify your identity. Please try again later.",Toast.LENGTH_LONG).show()
+                    Toast.makeText(this,"Incorrect username or password. Please try again later.",Toast.LENGTH_LONG).show()
                 } else if (error is ServerError) {
                     Toast.makeText(this,"Unexpected error occurred. Please try again later.",Toast.LENGTH_LONG).show()
                 } else if (error is NetworkError) {
                     Toast.makeText(this,"Unexpected error occurred. Please try again later.",Toast.LENGTH_LONG).show()
                 } else if (error is ParseError) {
                     Toast.makeText(this,"Received unexpected response from server. Please try again later.",Toast.LENGTH_LONG).show()
+                } else if (error is ClientError) {
+                    Toast.makeText(this,"Unable to find the service you requested. Please make sure the connection is corret.",Toast.LENGTH_LONG).show()
                 }
                 else{
                     try{
                         val responseCode = error.networkResponse.statusCode
                         when (responseCode) {
+                            HttpURLConnection.HTTP_BAD_REQUEST -> {
+                                Toast.makeText(this,"Unable to process your request. Please try again later.",Toast.LENGTH_SHORT).show()
+                            }
                             HttpURLConnection.HTTP_NOT_FOUND -> {
                                 Toast.makeText(this,"Unable to locate the service you request. Please try again later.",Toast.LENGTH_SHORT).show()
                             }
@@ -201,7 +186,7 @@ class LoginActivity : AppCompatActivity() {
 //
 //                            Log.i("cookies", rawCookies!!)
                 if(headers != null){
-                    MySingleton.getInstance(this@LoginActivity).checkSessionCookie(response.headers!!)
+                    Singleton.getInstance(this@LoginActivity).checkSessionCookie(response.headers!!)
                 }
                 return super.parseNetworkResponse(response)
             }

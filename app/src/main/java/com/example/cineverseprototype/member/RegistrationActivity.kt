@@ -20,13 +20,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.widget.doAfterTextChanged
 import androidx.preference.PreferenceManager
-import com.android.volley.AuthFailureError
-import com.android.volley.DefaultRetryPolicy
-import com.android.volley.RequestQueue
-import com.android.volley.Response
+import com.android.volley.*
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.cineverseprototype.*
+import com.example.cineverseprototype.R
 import com.example.cineverseprototype.databinding.ActivityRegistrationBinding
 import com.example.cineverseprototype.picasso.CircleTransform
 import com.example.cineverseprototype.volley.FileDataPart
@@ -36,6 +34,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.net.HttpURLConnection
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.*
@@ -96,9 +95,9 @@ class RegistrationActivity : AppCompatActivity() {
                         }
                     }
                     else{
-                        val picture = createImageData(imageUri!!.data!!)
+                        val picture = Util.createImageData(imageUri!!.data!!,contentResolver)
                         form = if(picture != null){
-                            val extension = getFileExtentsion(imageUri!!.data!!)
+                            val extension = Util.getFileExtentsion(imageUri!!.data!!,contentResolver)
                             var file = FileDataPart("ProfileImage.${extension}",picture,extension!!)
                             RegistrationForm(fullName,username,date,password,email,file)
                         } else{
@@ -120,14 +119,13 @@ class RegistrationActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    val retryPolicy = DefaultRetryPolicy(10000, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+                    val retryPolicy = DefaultRetryPolicy(0, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
 
                     val api = "$domain/guest/registerAccount"
                     val req = object : VolleyMultipartRequest(
                         Method.POST,
                         api,
                         Response.Listener { response ->
-                            queueRequest!!.stop()
                             finishLoading()
 
                             if(!isFinishing){
@@ -145,10 +143,40 @@ class RegistrationActivity : AppCompatActivity() {
                         },
                         Response.ErrorListener { error ->
                             finishLoading()
-                            queueRequest!!.stop()
                             Log.e(TAG, error.stackTraceToString())
-
-                            Toast.makeText(this,"Unexpected error occurred. Please try again later.",Toast.LENGTH_SHORT).show()
+                            if (error is TimeoutError || error is NoConnectionError) {
+                                Toast.makeText(this, "Request timed out. Please try again later.",Toast.LENGTH_LONG).show()
+                            } else if (error is AuthFailureError) {
+                                Toast.makeText(this,"Unexpected error occurred. Please try again later.",Toast.LENGTH_LONG).show()
+                            } else if (error is ServerError) {
+                                Toast.makeText(this,"Unexpected error occurred from server. Please try again later.",Toast.LENGTH_LONG).show()
+                            } else if (error is NetworkError) {
+                                Toast.makeText(this,"Connection error. Please try again later.",Toast.LENGTH_LONG).show()
+                            } else if (error is ParseError) {
+                                Toast.makeText(this,"Received unexpected response from server. Please try again later.",Toast.LENGTH_LONG).show()
+                            }
+                            else{
+                                try{
+                                    when (error.networkResponse.statusCode) {
+                                        HttpURLConnection.HTTP_BAD_REQUEST -> {
+                                            Toast.makeText(this,"Unable to process your request. Please try again later.",Toast.LENGTH_SHORT).show()
+                                        }
+                                        HttpURLConnection.HTTP_NOT_FOUND -> {
+                                            Toast.makeText(this,"Unable to locate the service you request. Please try again later.",Toast.LENGTH_SHORT).show()
+                                        }
+                                        HttpURLConnection.HTTP_INTERNAL_ERROR -> {
+                                            Toast.makeText(this,"Unknown error occurred. Please try again later.",Toast.LENGTH_SHORT).show()
+                                        }
+                                        HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                                            Toast.makeText(this,"Account not found. Please try again.",Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                }
+                                catch(ex:Exception){
+                                    Log.e(TAG,ex.stackTraceToString())
+                                    Toast.makeText(this,"Unexpected error occurred. Please try again later.",Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }) {
                         override fun getParams(): MutableMap<String, String> {
                             var params = mutableMapOf<String,String>()
@@ -273,10 +301,6 @@ class RegistrationActivity : AppCompatActivity() {
         dateRangePicker.show(supportFragmentManager, "DatePicker")
     }
 
-    private fun getFileExtentsion(uri:Uri):String?{
-        val mime = MimeTypeMap.getSingleton()
-        return mime.getExtensionFromMimeType(contentResolver.getType(uri))
-    }
     private fun getBitmap(vectorDrawable: VectorDrawable): Bitmap {
         val bitmap = Bitmap.createBitmap(
             vectorDrawable.intrinsicWidth,
@@ -286,16 +310,6 @@ class RegistrationActivity : AppCompatActivity() {
         vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
         vectorDrawable.draw(canvas)
         return bitmap
-    }
-
-    private fun createImageData(uri:Uri):ByteArray?{
-        return try {
-            val inputStream = contentResolver.openInputStream(uri)
-            inputStream?.buffered()?.readBytes()
-        } catch(io: IOException){
-            Log.e(TAG,io.stackTraceToString())
-            null
-        }
     }
 
     private fun validateField():Boolean{
@@ -324,6 +338,9 @@ class RegistrationActivity : AppCompatActivity() {
             }
             isValid = false
         }
+        else{
+            binding.usernameLayout.error = null
+        }
 
         val email = binding.emailInput.text.toString()
         if(email.isNullOrEmpty()){
@@ -339,6 +356,9 @@ class RegistrationActivity : AppCompatActivity() {
                 firstFocusElement = binding.emailLayout
             }
             isValid = false
+        }
+        else{
+            binding.emailLayout.error = null
         }
 
         val fullName = binding.fullNameInput.text.toString()
@@ -356,6 +376,9 @@ class RegistrationActivity : AppCompatActivity() {
             }
             isValid = false
         }
+        else{
+            binding.fullNameLayout.error = null
+        }
 
         val password = binding.passwordInput.text.toString()
         if(password.isNullOrEmpty()){
@@ -371,6 +394,8 @@ class RegistrationActivity : AppCompatActivity() {
                 firstFocusElement = binding.passwordLayout
             }
             isValid = false
+        }else{
+            binding.passwordLayout.error = null
         }
 
         val timestamp = binding.birthDateInput.tag
@@ -388,6 +413,9 @@ class RegistrationActivity : AppCompatActivity() {
             }
             isValid = false
         }
+        else{
+            binding.birthDateLayout.error = null
+        }
 
         if(!isValid && firstFocusElement != null){
             firstFocusElement.requestFocus()
@@ -399,7 +427,7 @@ class RegistrationActivity : AppCompatActivity() {
     private fun validateEmail(domain:String, email:String){
         val api = "$domain/guest/checkEmail"
 
-        val queue = MySingleton.getInstance(this).requestQueue
+        val queue = Singleton.getInstance(this).requestQueue
 
         val req: JsonObjectRequest = object : JsonObjectRequest(
             Method.POST, api,
@@ -436,7 +464,7 @@ class RegistrationActivity : AppCompatActivity() {
     private fun validateUsername(domain:String, username:String){
         val api = "$domain/guest/checkUsername"
 
-        val queue = MySingleton.getInstance(this).requestQueue
+        val queue = Singleton.getInstance(this).requestQueue
 
         val req: JsonObjectRequest = object : JsonObjectRequest(
             Method.POST, api,
@@ -490,9 +518,9 @@ class RegistrationActivity : AppCompatActivity() {
                 val data = result.data
                 Log.i("PHOTO", data.toString())
                 //binding.profilePic.setImageURI(data?.data)
-                MySingleton.getInstance(this).picasso.load(data?.data).transform(CircleTransform()).into(binding.profilePic)
+                Singleton.getInstance(this).picasso.load(data?.data).transform(CircleTransform()).into(binding.profilePic)
                 imageUri = data
-                Log.i(TAG,"Image Type ${getFileExtentsion(data?.data!!)}")
+                Log.i(TAG,"Image Type ${Util.getFileExtentsion(data?.data!!,contentResolver)}")
             } else {
                 Log.i("PHOTO", "CANCELLED")
             }
