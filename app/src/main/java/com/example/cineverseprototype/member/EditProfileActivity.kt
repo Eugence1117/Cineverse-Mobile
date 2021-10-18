@@ -12,7 +12,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
 import com.android.volley.*
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.ethanhua.skeleton.Skeleton
@@ -23,15 +22,12 @@ import com.example.cineverseprototype.databinding.ActivityEditProfileBinding
 import com.example.cineverseprototype.databinding.FragmentDeleteAccountBinding
 import com.example.cineverseprototype.picasso.CircleTransform
 import com.example.cineverseprototype.volley.FileDataPart
-import com.example.cineverseprototype.volley.VolleyJsonRequest
 import com.example.cineverseprototype.volley.VolleyMultipartRequest
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Callback
 import org.json.JSONObject
-import org.w3c.dom.Text
-import java.io.File
 import java.net.HttpURLConnection
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
@@ -203,16 +199,18 @@ class EditProfileActivity : AppCompatActivity() {
                                     val request = object: StringRequest(
                                             Request.Method.POST,api,
                                         { jsonString ->
-                                            val jsonResult = JSONObject(jsonString)
-                                            hideLoading()
-                                            val result = jsonResult.getBoolean("result")
-                                            if(result){
-                                                Toast.makeText(this,"Password updated.",Toast.LENGTH_SHORT).show()
-                                                passwordDialog.dismiss()
-                                            }
-                                            else{
-                                                val msg = jsonResult.getString("msg")
-                                                Toast.makeText(this,msg,Toast.LENGTH_LONG).show()
+                                            if(!isFinishing){
+                                                val jsonResult = JSONObject(jsonString)
+                                                hideLoading()
+                                                val result = jsonResult.getBoolean("result")
+                                                if(result){
+                                                    Toast.makeText(this,"Password updated.",Toast.LENGTH_SHORT).show()
+                                                    passwordDialog.dismiss()
+                                                }
+                                                else{
+                                                    val msg = jsonResult.getString("msg")
+                                                    Toast.makeText(this,msg,Toast.LENGTH_LONG).show()
+                                                }
                                             }
                                         },
                                         { error ->
@@ -301,17 +299,19 @@ class EditProfileActivity : AppCompatActivity() {
                                     val request = object: StringRequest(
                                         Request.Method.POST,api,
                                         { jsonString ->
-                                            val jsonResult = JSONObject(jsonString)
-                                            hideLoading()
-                                            val result = jsonResult.getBoolean("result")
-                                            if(result){
-                                                Toast.makeText(this,"Account Deleted.",Toast.LENGTH_SHORT).show()
-                                                confirmDialog.dismiss()
-                                                logout(expiredDialog)
-                                            }
-                                            else{
-                                                val msg = jsonResult.getString("msg")
-                                                Toast.makeText(this,msg,Toast.LENGTH_LONG).show()
+                                            if(!isFinishing){
+                                                val jsonResult = JSONObject(jsonString)
+                                                hideLoading()
+                                                val result = jsonResult.getBoolean("result")
+                                                if(result){
+                                                    Toast.makeText(this,"Account Deleted.",Toast.LENGTH_SHORT).show()
+                                                    confirmDialog.dismiss()
+                                                    logout(expiredDialog)
+                                                }
+                                                else{
+                                                    val msg = jsonResult.getString("msg")
+                                                    Toast.makeText(this,msg,Toast.LENGTH_LONG).show()
+                                                }
                                             }
                                         },
                                         { error ->
@@ -440,7 +440,6 @@ class EditProfileActivity : AppCompatActivity() {
                                     Method.POST,
                                     api,
                                     Response.Listener { response ->
-                                        queueRequest!!.stop()
                                         hideLoading()
 
                                         if(!isFinishing){
@@ -461,7 +460,6 @@ class EditProfileActivity : AppCompatActivity() {
                                     },
                                     Response.ErrorListener { error ->
                                         hideLoading()
-                                        queueRequest!!.stop()
                                         if (it is TimeoutError || it is NoConnectionError) {
                                             Toast.makeText(this, "Request timed out. Please try again later.",Toast.LENGTH_LONG).show()
                                         } else if (it is AuthFailureError) {
@@ -550,7 +548,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun showPictureLoading(){
-        skeleton = Skeleton.bind(binding.profilePic).load(R.layout.profile_picture_skeletion).show()
+        skeleton = Skeleton.bind(binding.profilePic).load(R.layout.profile_picture_skeleton).show()
     }
 
     private fun hidePictureLoading(){

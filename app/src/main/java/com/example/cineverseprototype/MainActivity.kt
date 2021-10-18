@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        val  navController = (supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment).navController
+        val navController = (supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment).navController
         binding.botNavigationView.setupWithNavController(navController)
         
     }

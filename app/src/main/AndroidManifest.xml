@@ -13,6 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CineversePrototype">
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:label="@string/title_activity_reset_password"
+            android:theme="@style/Theme.CineverseActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
+        </activity>
         <activity android:name=".member.EditProfileActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -25,11 +33,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LoginActivity" />
         </activity>
-        <activity android:name=".MainActivity"
-            android:launchMode="singleTop"/>
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop" />
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login">
+            android:label="@string/app_name_lower">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

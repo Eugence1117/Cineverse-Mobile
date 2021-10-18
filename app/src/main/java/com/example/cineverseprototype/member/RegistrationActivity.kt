@@ -126,9 +126,9 @@ class RegistrationActivity : AppCompatActivity() {
                         Method.POST,
                         api,
                         Response.Listener { response ->
-                            finishLoading()
-
                             if(!isFinishing){
+                                finishLoading()
+
                                 val builder = AlertDialog.Builder(this)
                                 builder.setTitle("Account Created")
                                 builder.setMessage("Please go to your mailbox to verify your account.")

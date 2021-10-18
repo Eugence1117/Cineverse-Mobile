@@ -3,9 +3,7 @@ package com.example.cineverseprototype.member
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.telecom.Call
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,8 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.databinding.DataBindingUtil
 import com.android.volley.*
 import com.android.volley.toolbox.JsonObjectRequest
 import com.ethanhua.skeleton.Skeleton
@@ -24,7 +20,6 @@ import com.example.cineverseprototype.*
 import com.example.cineverseprototype.R
 import com.example.cineverseprototype.picasso.CircleTransform
 import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 
@@ -86,22 +81,24 @@ class ProfileFragment : Fragment() {
                 val api = "$domainName/api/getUserInfo"
                 val request = object:JsonObjectRequest(Request.Method.GET,api,null,
                     {
-                        hideLoading()
-                        val member = Member.toObject(it)
-                        if(member == null){
-                            Toast.makeText(requireContext(),"Unable to retrieve data from server. Please contact with the support team.",Toast.LENGTH_SHORT).show()
-                        }
-                        else{
-                            insertData(member!!)
-                            binding.editProfileBtn.setOnClickListener {
-                                val intent = Intent(requireContext(),EditProfileActivity::class.java)
-                                intent.putExtra("full_name",member.name)
-                                intent.putExtra("username",member.username)
-                                intent.putExtra("picture",member.picUrl)
-                                intent.putExtra("birthDate",member.dateOfBirth.time)
-                                intent.putExtra("email",member.email)
+                        if(isAdded){
+                            hideLoading()
+                            val member = Member.toObject(it)
+                            if(member == null){
+                                Toast.makeText(requireContext(),"Unable to retrieve data from server. Please contact with the support team.",Toast.LENGTH_SHORT).show()
+                            }
+                            else{
+                                insertData(member!!)
+                                binding.editProfileBtn.setOnClickListener {
+                                    val intent = Intent(requireContext(),EditProfileActivity::class.java)
+                                    intent.putExtra("full_name",member.name)
+                                    intent.putExtra("username",member.username)
+                                    intent.putExtra("picture",member.picUrl)
+                                    intent.putExtra("birthDate",member.dateOfBirth.time)
+                                    intent.putExtra("email",member.email)
 
-                                resultLauncher.launch(intent)
+                                    resultLauncher.launch(intent)
+                                }
                             }
                         }
                     },
@@ -156,7 +153,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showPictureLoading(){
-        skeletionProfilePicture = Skeleton.bind(binding.profilePic).load(R.layout.profile_picture_skeletion).show()
+        skeletionProfilePicture = Skeleton.bind(binding.profilePic).load(R.layout.profile_picture_skeleton).show()
     }
 
     private fun hidePictureLoading(){

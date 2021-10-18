@@ -32,4 +32,13 @@
         <!-- color used by navigation icon and overflow icon -->
         <item name="colorOnPrimary">@color/secondaryTextColor</item>
     </style>
+
+    <style name="Theme.CineversePrototype.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.CineversePrototype.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.CineversePrototype.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

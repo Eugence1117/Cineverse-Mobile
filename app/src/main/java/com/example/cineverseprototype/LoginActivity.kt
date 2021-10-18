@@ -32,6 +32,19 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.progress.hide()
+
+        val preference = Singleton.getInstance(this).preference
+        val username = preference.getString(Constant.USERNAME_KEY,null)
+        val password = preference.getString(Constant.PASSWORD_KEY,null)
+        val isRemember = preference.getBoolean(Constant.REMEMBER_OPTION,false)
+        if(!username.isNullOrEmpty()){
+            binding.usernameInput.setText(username)
+        }
+        if(!password.isNullOrEmpty()){
+            binding.passwordInput.setText(password)
+        }
+        binding.rememberChkbox.isChecked = isRemember
+
         binding.loginBtn.setOnClickListener {
             if(validateInput()){
                 val preference = PreferenceManager.getDefaultSharedPreferences(this)
@@ -47,6 +60,11 @@ class LoginActivity : AppCompatActivity() {
 
         binding.btnSetting.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.forgetBtn.setOnClickListener {
+            val intent = Intent(this,ResetPasswordActivity::class.java)
             startActivity(intent)
         }
 
@@ -117,11 +135,22 @@ class LoginActivity : AppCompatActivity() {
             Request.Method.POST, loginAPI,
             Response.Listener { response ->
                 finishLoading()
+                val preference = Singleton.getInstance(this).preference
+                val editor = preference.edit()
+                editor.putBoolean(Constant.REMEMBER_OPTION,binding.rememberChkbox.isChecked)
+                if(binding.rememberChkbox.isChecked){
+                    editor.putString(Constant.USERNAME_KEY,username)
+                    editor.putString(Constant.PASSWORD_KEY,password)
+                }
+                else{
+                    editor.putString(Constant.USERNAME_KEY,null)
+                    editor.putString(Constant.PASSWORD_KEY,null)
+                }
+                editor.commit()
                 val intent = Intent(this,MainActivity::class.java)
                 startActivity(intent)
                 finish()
 
-                queue.stop()
             },
             Response.ErrorListener { error ->
                 finishLoading()
@@ -157,7 +186,6 @@ class LoginActivity : AppCompatActivity() {
                             }
                         }
                         binding.usernameInput.requestFocus()
-                        queue.stop()
                     }
                     catch(ex:Exception){
                         Log.e(TAG,ex.stackTraceToString())

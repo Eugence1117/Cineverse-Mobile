@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">CINEVERSE</string>
-
+    <string name="app_name_lower">Cineverse</string>
     <string name="movieLabel">Movies</string>
     <string name="profileLabel">Profile</string>
     <string name="cinemaLabel">Cinemas</string>
@@ -57,5 +57,17 @@
     <string name="edit_profile_title">Edit Profile</string>
     <string name="oldPasswordLabel">Current Password</string>
     <string name="newPasswordLabel">New Password</string>
+    <string name="title_activity_reset_password">ResetPassword</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="resetLabel">We have to verify your identity first before we help you to reset the password. Please enter your email address to perform the verification.</string>
+    <string name="resetPassword_Label">Reset Password</string>
+    <string name="verifyLabel">Verify</string>
     1
 </resources>

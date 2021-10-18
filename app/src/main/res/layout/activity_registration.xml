@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -25,12 +25,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="8dp"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true"
+            android:fillViewport="true">
 
                 <LinearLayout
                     android:layout_marginHorizontal="8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:layout_marginTop="35dp">
 
