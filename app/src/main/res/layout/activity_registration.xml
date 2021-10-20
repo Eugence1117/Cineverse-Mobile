@@ -24,9 +24,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="8dp"
-            android:fitsSystemWindows="true"
-            android:fillViewport="true">
+            android:layout_marginHorizontal="8dp">
 
                 <LinearLayout
                     android:layout_marginHorizontal="8dp"

@@ -82,7 +82,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         showPictureLoading()
         if(picture == null){
-            Singleton.getInstance(this).picasso.load(R.drawable.baseline_account_circle_grey_300_48dp).transform(CircleTransform()).into(binding.profilePic,object:Callback{
+            Singleton.getInstance(this).picasso.load(R.drawable.baseline_account_circle_grey_300_48dp).placeholder(R.drawable.baseline_account_circle_grey_300_48dp).transform(CircleTransform()).into(binding.profilePic,object:Callback{
                 override fun onSuccess() {
                     hidePictureLoading()
                 }
@@ -101,7 +101,7 @@ class EditProfileActivity : AppCompatActivity() {
                 }
 
                 override fun onError(e: java.lang.Exception?) {
-                    Singleton.getInstance(this@EditProfileActivity).picasso.load(R.drawable.baseline_account_circle_grey_300_48dp).transform(CircleTransform()).into(binding.profilePic,object:Callback {
+                    Singleton.getInstance(this@EditProfileActivity).picasso.load(R.drawable.baseline_account_circle_grey_300_48dp).placeholder(R.drawable.baseline_account_circle_grey_300_48dp).transform(CircleTransform()).into(binding.profilePic,object:Callback {
                         override fun onSuccess() {
                             hidePictureLoading()
                         }

@@ -17,9 +17,9 @@ import com.example.cineverseprototype.R
 import com.example.cineverseprototype.Singleton
 import com.example.cineverseprototype.Util
 import com.example.cineverseprototype.databinding.FragmentBranchBinding
-import com.example.cineverseprototype.member.EditProfileActivity
-import com.example.cineverseprototype.member.Member
+import com.example.cineverseprototype.movie.MoviesFromBranchActivity
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.util.*
@@ -43,6 +43,9 @@ class BranchFragment : Fragment() {
         binding = FragmentBranchBinding.inflate(inflater,container,false)
         binding.progress.hide()
 
+        binding.refreshBtn.setOnRefreshListener {
+            getData()
+        }
         getData()
         return binding.root
     }
@@ -53,6 +56,9 @@ class BranchFragment : Fragment() {
     }
 
     private fun hideLoading(){
+        if(binding.refreshBtn.isRefreshing){
+            binding.refreshBtn.isRefreshing = false
+        }
         binding.progress.hide()
         if(skeletonScreen != null){
             skeletonScreen!!.hide()
@@ -83,37 +89,56 @@ class BranchFragment : Fragment() {
                     {
                         if(isAdded){
                             hideLoading()
+                            try{
+                                if(it.isNull("result")){
+                                    val errorMsg = it.getString("errorMsg")
+                                    Toast.makeText(requireContext(),errorMsg,Toast.LENGTH_SHORT).show()
+                                }
+                                else{
+                                    val result = it.get("result") as JSONObject
 
-                            val title:MutableList<StateLabel> = LinkedList<StateLabel>()
-                            val items:MutableMap<StateLabel,MutableList<Branch>> = HashMap<StateLabel,MutableList<Branch>>()
+                                    val title:MutableList<StateLabel> = LinkedList<StateLabel>()
+                                    val items:MutableMap<StateLabel,MutableList<Branch>> = HashMap<StateLabel,MutableList<Branch>>()
 
-                            for(state in it.keys()){
-                                var branches = it.get(state) as JSONArray
-                                val label = StateLabel(state,branches.length())
-                                title.add(label)
-                                //var branches:List<Map<String,String>> = it.get(state) as List<Map<String,String>>
-                                for(i in 0 until branches.length()){
-                                    var branch = Branch.toObject(branches.get(i) as JSONObject)
-                                    if(branch != null){
-                                        if(items.containsKey(label)){
-                                            items[label]!!.add(branch!!)
-                                        }
-                                        else{
-                                            val list = mutableListOf<Branch>(branch!!)
-                                            items[label] = list
+                                    for(state in result.keys()){
+                                        var branches = result.get(state) as JSONArray
+                                        val label = StateLabel(state,branches.length())
+                                        title.add(label)
+                                        //var branches:List<Map<String,String>> = it.get(state) as List<Map<String,String>>
+                                        for(i in 0 until branches.length()){
+                                            var branch = Branch.toObject(branches.get(i) as JSONObject)
+                                            if(branch != null){
+                                                if(items.containsKey(label)){
+                                                    items[label]!!.add(branch!!)
+                                                }
+                                                else{
+                                                    val list = mutableListOf<Branch>(branch!!)
+                                                    items[label] = list
+                                                }
+                                            }
+                                            else{
+                                                Toast.makeText(requireContext(),"Unable to retrieve complete data from server.",Toast.LENGTH_SHORT).show()
+                                            }
                                         }
                                     }
-                                    else{
-                                        Toast.makeText(requireContext(),"Unable to retrieve complete data from server.",Toast.LENGTH_SHORT).show()
+                                    val adapter = ExpandableListAdapter(requireContext(),title,items)
+                                    binding.expandList.setAdapter(adapter)
+                                    binding.expandList.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
+                                        val item = items[title.get(groupPosition)]!![childPosition]
+
+                                        val intent = Intent(requireContext(),MoviesFromBranchActivity::class.java)
+                                        intent.putExtra("branchName",item.branchName)
+                                        intent.putExtra("operatingHour",item.toBusinessHour())
+                                        intent.putExtra("branchId",item.branchId)
+
+                                        startActivity(intent)
+                                        true
                                     }
                                 }
                             }
-                            val adapter = ExpandableListAdapter(requireContext(),title,items)
-                            binding.expandList.setAdapter(adapter)
-                            binding.expandList.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
-                                Toast.makeText(requireContext(),
-                                    "${title[groupPosition]} -> ${items[title.get(groupPosition)]!![childPosition]}", Toast.LENGTH_SHORT).show();
-                                true
+                            catch (ex: JSONException){
+                                Log.e(TAG,ex.stackTraceToString())
+                                Toast.makeText(requireContext(),"Unable to process the data from server. Please try again later.",Toast.LENGTH_SHORT).show()
                             }
                         }
                     },

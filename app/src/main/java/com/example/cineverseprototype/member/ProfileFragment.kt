@@ -45,6 +45,9 @@ class ProfileFragment : Fragment() {
 
         expiredDialog = Util.createSessionExpiredDialog(requireActivity())
 
+        binding.refreshBtn.setOnRefreshListener {
+            retrieveData()
+        }
         retrieveData()
         return binding.root
     }
@@ -164,8 +167,8 @@ class ProfileFragment : Fragment() {
 
     private fun insertData(member: Member){
         showPictureLoading()
-        if(member.picUrl == null){
-            Singleton.getInstance(requireContext()).picasso.load(R.drawable.baseline_account_circle_grey_300_48dp).transform(CircleTransform()).into(binding.profilePic,object:Callback{
+        if(member.picUrl.isNullOrEmpty()){
+            Singleton.getInstance(requireContext()).picasso.load(R.drawable.baseline_account_circle_grey_300_48dp).placeholder(R.drawable.baseline_account_circle_grey_300_48dp).into(binding.profilePic,object:Callback{
                 override fun onSuccess() {
                     hidePictureLoading()
                 }
@@ -183,7 +186,7 @@ class ProfileFragment : Fragment() {
                 }
 
                 override fun onError(e: java.lang.Exception?) {
-                    Singleton.getInstance(requireContext()).picasso.load(R.drawable.baseline_account_circle_grey_300_48dp).transform(CircleTransform()).into(binding.profilePic,object:Callback{
+                    Singleton.getInstance(requireContext()).picasso.load(R.drawable.baseline_account_circle_grey_300_48dp).placeholder(R.drawable.baseline_account_circle_grey_300_48dp).transform(CircleTransform()).into(binding.profilePic,object:Callback{
                         override fun onSuccess() {
                             hidePictureLoading()
                         }
@@ -211,6 +214,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun hideLoading(){
+        if(binding.refreshBtn.isRefreshing){
+            binding.refreshBtn.isRefreshing = false
+        }
         binding.editProfileBtn.isEnabled = true
         binding.progress.hide()
         if(skeletonScreen != null){

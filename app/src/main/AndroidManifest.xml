@@ -13,6 +13,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CineversePrototype">
+        <activity android:name=".movie.MoviesFromBranchActivity"
+            android:theme="@style/Theme.CineverseActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
         <activity
             android:name=".ResetPasswordActivity"
             android:label="@string/title_activity_reset_password"

@@ -46,6 +46,7 @@ dependencies {
     implementation("ch.acra:acra-dialog:5.8.3")
     implementation 'com.ethanhua:skeleton:1.1.2'
     implementation 'io.supercharge:shimmerlayout:2.1.0'
+    implementation 'com.synnapps:carouselview:0.1.4'
 
     implementation 'com.android.databinding:compiler:3.0.1'
     implementation 'net.steamcrafted:materialiconlib:1.1.5'
