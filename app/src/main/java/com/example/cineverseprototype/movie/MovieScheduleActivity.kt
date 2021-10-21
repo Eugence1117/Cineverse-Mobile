@@ -30,7 +30,12 @@ class MovieScheduleActivity : AppCompatActivity() {
         val movie = intent.getSerializableExtra("movie") as Movie
 
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.setTitle(movie.movieName)
 
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        
         Singleton.getInstance(this).picasso.load(movie.picURL).placeholder(R.drawable.baseline_image_grey_400_48dp).into(binding.movieImage)
 
         val format = SimpleDateFormat("dd-MMM-yyyy")
