@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".movie.MovieScheduleActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:navigationIcon="@drawable/baseline_arrow_back_white_24dp"
+                app:subtitleTextColor="@color/secondaryTextColor"
+                app:title="@string/app_name"
+                app:titleTextColor="@color/secondaryTextColor" />
+
+            <ImageView
+                android:id="@+id/movieInfoBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/toolbar"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="8dp"
+                android:padding="5dp"
+                app:srcCompat="@drawable/round_info_white_24dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!--This the interface sitting behind the backdrop and shown when it is collapsed-->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/secondaryColor"
+        android:fitsSystemWindows="true"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:paddingBottom="?attr/actionBarSize">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/movieImage"
+                android:layout_width="150dp"
+                android:layout_height="250dp"
+                android:padding="5dp"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:id="@+id/moviePlot"
+                android:layout_width="match_parent"
+                android:justificationMode="inter_word"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textSize="12sp"
+                android:textColor="@color/secondaryTextColor"/>
+
+            <TextView
+                android:id="@+id/movieDuration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="@color/secondaryTextColor"/>
+
+            <TextView
+                android:id="@+id/movieReleaseDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="@color/secondaryTextColor"/>
+
+            <TextView
+                android:id="@+id/movieType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="@color/secondaryTextColor"/>
+
+            <TextView
+                android:id="@+id/movieCensorship"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="@color/secondaryTextColor"/>
+
+            <TextView
+                android:id="@+id/movieDistributor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="@color/secondaryTextColor"/>
+
+            <TextView
+                android:id="@+id/movieDirector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="@color/secondaryTextColor"/>
+
+            <TextView
+                android:id="@+id/movieCast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="@color/secondaryTextColor"/>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bookButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bookLabel"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!--This is the backdrop's content with a BottomSheetBehaviour applied to it-->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/ic_list_header_background"
+            app:behavior_peekHeight="56dp"
+            android:elevation="4dp"
+            android:padding="5dp"
+            app:layout_behavior="com.example.cineverseprototype.GestureLockedBottomSheetBehavior">
+
+            <!--And finally this is the body of the backdrop's content. You can add here whatever you need inside a view group (LinearLayout, RelativeLayout, SwipeRefreshLayout, ConstraintLayout, etc.)-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="900dp"
+                android:background="#ffffff">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:padding="3dp"
+                    android:drawablePadding="8dp"
+                    style="?attr/textAppearanceBody1"
+                    android:text="Schedule Available"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

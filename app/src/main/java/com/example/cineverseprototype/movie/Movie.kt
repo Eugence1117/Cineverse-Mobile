@@ -1,8 +1,10 @@
 package com.example.cineverseprototype.movie
 
+import android.os.Parcelable
 import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.Serializable
 
 class Movie(
     val movieId: String,
@@ -17,14 +19,39 @@ class Movie(
     val movieType: String,
     val censorship: String,
     val releaseDate: Long
-)
+) : Serializable
 {
     fun getTotalTime():String{
         val hour = (totalTime / 60).toInt()
         val minutes = (totalTime % 60).toInt()
-        return "$hour hour(s) $minutes minute(s)"
+        return "${hour}H ${minutes}M"
     }
 
+    fun getCensorshipColor():String{
+        return when(censorship){
+            "18PA" ->{
+                "#fd7e14"
+            }
+            "18PL" -> {
+                "#fd7e14"
+            }
+            "18SG" -> {
+                "#fd7e14"
+            }
+            "18SX" -> {
+                "#fd7e14"
+            }
+            "P13" -> {
+                "#ffc107"
+            }
+            "U" -> {
+                "#198754"
+            }
+            else -> {
+                "#0d6efd"
+            }
+        }
+    }
     companion object{
 
         private val TAG = javaClass.name

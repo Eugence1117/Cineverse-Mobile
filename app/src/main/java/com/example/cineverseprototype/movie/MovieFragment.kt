@@ -209,7 +209,9 @@ class MovieFragment : Fragment() {
         else{
             val cookie = preference.getString(Constant.SESSION_COOKIE,null)
             if(cookie.isNullOrEmpty()){
-                expiredDialog.show()
+                if(isAdded){
+                    expiredDialog.show()
+                }
             }
             else{
                 showLoading()
@@ -220,34 +222,36 @@ class MovieFragment : Fragment() {
                 val request = object: JsonObjectRequest(Request.Method.GET,api,null,
                     {
                         hideLoading()
-                        try{
-                            if(it.isNull("result")){
-                                val errorMsg = it.getString("errorMsg")
-                                Toast.makeText(requireContext(),errorMsg, Toast.LENGTH_SHORT).show()
-                            }
-                            else{
-                                val result = it.get("result") as JSONArray
-                                val movieList:ArrayList<Movie> = ArrayList<Movie>()
-                                if(result.length() == 0){
-                                    Toast.makeText(requireContext(),"No movie Available", Toast.LENGTH_SHORT).show()
+                        if(isAdded){
+                            try{
+                                if(it.isNull("result")){
+                                    val errorMsg = it.getString("errorMsg")
+                                    Toast.makeText(requireContext(),errorMsg, Toast.LENGTH_SHORT).show()
                                 }
-                                for(i in 0 until result.length()){
-                                    val movie = Movie.toObject(result.get(i) as JSONObject)
-                                    if(movie != null){
-                                        movieList.add(movie)
+                                else{
+                                    val result = it.get("result") as JSONArray
+                                    val movieList:ArrayList<Movie> = ArrayList<Movie>()
+                                    if(result.length() == 0){
+                                        Toast.makeText(requireContext(),"No movie Available", Toast.LENGTH_SHORT).show()
                                     }
-                                    else{
-                                        Toast.makeText(requireContext(),"Unable to retrieve complete data from server.", Toast.LENGTH_SHORT).show()
+                                    for(i in 0 until result.length()){
+                                        val movie = Movie.toObject(result.get(i) as JSONObject)
+                                        if(movie != null){
+                                            movieList.add(movie)
+                                        }
+                                        else{
+                                            Toast.makeText(requireContext(),"Unable to retrieve complete data from server.", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
+                                    val adapter = MoviePosterRecycleAdapter(movieList)
+                                    binding.movieList.adapter = adapter
                                 }
-                                val adapter = MoviePosterRecycleAdapter(movieList)
-                                binding.movieList.adapter = adapter
                             }
-                        }
-                        catch (ex: JSONException){
-                            Log.e(TAG,ex.stackTraceToString())
-                            Toast.makeText(requireContext(),"Unable to process the data from server. Please try again later.",
-                                Toast.LENGTH_SHORT).show()
+                            catch (ex: JSONException){
+                                Log.e(TAG,ex.stackTraceToString())
+                                Toast.makeText(requireContext(),"Unable to process the data from server. Please try again later.",
+                                    Toast.LENGTH_SHORT).show()
+                            }
                         }
                     },
                     {
@@ -256,7 +260,9 @@ class MovieFragment : Fragment() {
                             Toast.makeText(requireContext(), "Request timed out. Please try again later.",
                                 Toast.LENGTH_LONG).show()
                         } else if (it is AuthFailureError) {
-                            expiredDialog.show()
+                            if(isAdded){
+                                expiredDialog.show()
+                            }
                         } else if (it is ServerError) {
                             Toast.makeText(requireContext(),"Unexpected error occurred. Please try again later.",
                                 Toast.LENGTH_LONG).show()

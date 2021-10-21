@@ -13,7 +13,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CineversePrototype">
-        <activity android:name=".movie.MoviesFromBranchActivity"
+        <activity
+            android:name=".movie.MovieScheduleActivity"
+            android:label="@string/title_activity_movie_schedule">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".movie.MoviesFromBranchActivity" />
+        </activity>
+        <activity
+            android:name=".movie.MoviesFromBranchActivity"
             android:theme="@style/Theme.CineverseActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

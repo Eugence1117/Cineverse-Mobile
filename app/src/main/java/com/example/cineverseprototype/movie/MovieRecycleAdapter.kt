@@ -1,5 +1,6 @@
 package com.example.cineverseprototype.movie
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,15 @@ class MovieRecycleAdapter(private val movieList:ArrayList<Movie>) : RecyclerView
         holder.itemView.findViewById<TextView>(R.id.movieName).text = movieList[position].movieName
         holder.itemView.findViewById<TextView>(R.id.movieDuration).text = movieList[position].getTotalTime()
         holder.itemView.findViewById<TextView>(R.id.movieType).text = movieList[position].movieType
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context,MovieScheduleActivity::class.java)
+            intent.putExtra("movie",movieList[position])
+            intent.putExtra("movieName",movieList[position].movieName)
+            intent.putExtra("movieId",movieList[position].movieId)
+            intent.putExtra("movieImg",movieList[position].picURL)
+            intent.putExtra("moviePlot",movieList[position].synopsis)
+            holder.itemView.context.startActivity(intent)
+        }
         //holder.itemView.findViewById<TextView>(R.id.censorship).text = movieList[position].censorship
 
         Singleton.getInstance(holder.itemView.context).picasso.load(movieList[position].picURL).placeholder(R.drawable.baseline_image_grey_400_48dp).into(holder.itemView.findViewById<ImageView>(R.id.movieImg))
@@ -30,5 +40,6 @@ class MovieRecycleAdapter(private val movieList:ArrayList<Movie>) : RecyclerView
     }
 
     class MovieViewHolder(view: View) : RecyclerView.ViewHolder(view){
+
     }
 }

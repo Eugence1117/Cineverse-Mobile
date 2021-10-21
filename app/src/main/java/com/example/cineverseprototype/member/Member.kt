@@ -23,7 +23,7 @@ class Member(
                 val status = obj.getInt("status")
                 val email = obj.getString("email")
                 val createDate = obj.getLong("createdDate")
-                val picUrl = if(obj.isNull("picURL")) null else obj.getString("picURL")
+                val picUrl = if(obj.isNull("picUrl")) null else obj.getString("picUrl")
 
                 Member(name,username,Date(dateOfBirth),status,email,Date(createDate),picUrl)
             } catch(ex:JSONException){

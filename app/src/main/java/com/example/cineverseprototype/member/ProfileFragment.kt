@@ -167,6 +167,7 @@ class ProfileFragment : Fragment() {
 
     private fun insertData(member: Member){
         showPictureLoading()
+        Log.i(TAG,"Member URL${member.picUrl}")
         if(member.picUrl.isNullOrEmpty()){
             Singleton.getInstance(requireContext()).picasso.load(R.drawable.baseline_account_circle_grey_300_48dp).placeholder(R.drawable.baseline_account_circle_grey_300_48dp).into(binding.profilePic,object:Callback{
                 override fun onSuccess() {
@@ -180,7 +181,7 @@ class ProfileFragment : Fragment() {
             })
         }
         else{
-            Singleton.getInstance(requireContext()).picasso.load(member.picUrl).transform(CircleTransform()).into(binding.profilePic,object:Callback{
+            Singleton.getInstance(requireContext()).picasso.load(member.picUrl).transform(CircleTransform()).placeholder(R.drawable.baseline_account_circle_grey_300_48dp).into(binding.profilePic,object:Callback{
                 override fun onSuccess() {
                     hidePictureLoading()
                 }
