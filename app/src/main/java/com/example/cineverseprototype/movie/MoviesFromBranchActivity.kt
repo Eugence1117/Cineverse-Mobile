@@ -126,7 +126,8 @@ class MoviesFromBranchActivity : AppCompatActivity() {
                                         Toast.makeText(this,"Unable to retrieve complete data from server.", Toast.LENGTH_SHORT).show()
                                     }
                                 }
-                                val adapter = MovieRecycleAdapter(movieList)
+
+                                val adapter = MovieRecycleAdapter(movieList,branchId)
                                 binding.movieList.adapter = adapter
 
                             }

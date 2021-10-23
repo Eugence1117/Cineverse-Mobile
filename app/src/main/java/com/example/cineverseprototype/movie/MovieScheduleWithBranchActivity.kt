@@ -1,21 +1,22 @@
 package com.example.cineverseprototype.movie
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.bold
 import com.android.volley.*
 import com.android.volley.toolbox.JsonObjectRequest
 import com.example.cineverseprototype.*
 import com.example.cineverseprototype.R
-import com.example.cineverseprototype.databinding.ActivityMovieScheduleBinding
+import com.example.cineverseprototype.databinding.ActivityMovieScheduleWithBranchBinding
 import com.example.cineverseprototype.schedule.DateRecycleAdapter
 import com.example.cineverseprototype.schedule.Schedule
 import com.example.cineverseprototype.schedule.ScheduleRecycleAdapter
+import com.example.cineverseprototype.schedule.ScheduleWithBranchRecycleAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter
 import org.json.JSONArray
@@ -27,20 +28,17 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+class MovieScheduleWithBranchActivity : AppCompatActivity() {
 
-class MovieScheduleActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMovieScheduleBinding
+    private lateinit var binding:ActivityMovieScheduleWithBranchBinding
     private val TAG = javaClass.name
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivityMovieScheduleBinding.inflate(layoutInflater)
+        binding = ActivityMovieScheduleWithBranchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val movie = intent.getSerializableExtra("movie") as Movie
-        val branchId = intent.getStringExtra("branchId")
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = movie.movieName
@@ -54,7 +52,7 @@ class MovieScheduleActivity : AppCompatActivity() {
 
         val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder.setTitle("Error")
-        dialogBuilder.setMessage("Unable to identify the item that you selected. Please try again later.")
+        dialogBuilder.setMessage("Unable to identify the movie that you selected. Please try again later.")
         dialogBuilder.setPositiveButton("OK") { dialog, _ ->
             dialog.dismiss()
         }
@@ -63,7 +61,7 @@ class MovieScheduleActivity : AppCompatActivity() {
         }
 
         val errorDialog = dialogBuilder.create()
-        if(branchId.isNullOrEmpty() || movie.movieId.isEmpty()){
+        if(movie.movieId.isEmpty()){
             errorDialog.show()
         }
         else{
@@ -77,10 +75,11 @@ class MovieScheduleActivity : AppCompatActivity() {
             binding.movieCensorship.text =  SpannableStringBuilder().bold {append("Censorship : ")}.append(movie.censorship)
             binding.movieDirector.text =  SpannableStringBuilder().bold {append("Director : ")}.append(movie.director)
             binding.movieDistributor.text =  SpannableStringBuilder().bold {append("Distributor : ")}.append(movie.distributor)
-            binding.movieReleaseDate.text =  SpannableStringBuilder().bold {append("Release Date : ")}.append(format.format(Date(movie.releaseDate)))
+            binding.movieReleaseDate.text =  SpannableStringBuilder().bold {append("Release Date : ")}.append(format.format(
+                Date(movie.releaseDate)))
             binding.movieType.text =  SpannableStringBuilder().bold {append("Type : ")}.append(movie.movieType)
 
-            getData(branchId,movie.movieId)
+            getData(movie.movieId)
         }
 
         val sheetBehavior = BottomSheetBehavior.from(binding.contentLayout)
@@ -117,7 +116,7 @@ class MovieScheduleActivity : AppCompatActivity() {
         binding.progress.hide()
     }
 
-    private fun getData(branchId:String,movieId:String){
+    private fun getData(movieId:String){
         val preference = Singleton.getInstance(this).preference
         val expiredDialog = Util.createSessionExpiredDialog(this)
         val domain = preference.getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
@@ -133,8 +132,9 @@ class MovieScheduleActivity : AppCompatActivity() {
             else{
                 showLoading()
                 val queue = Singleton.getInstance(this).requestQueue
-                val retryPolicy = DefaultRetryPolicy(45000, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
-                val api = "$domain/api/retrieveScheduleByMovieAndBranch?branchId=$branchId&movieId=$movieId"
+
+                val retryPolicy = DefaultRetryPolicy(60000, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+                val api = "$domain/api/retrieveScheduleByMovie?movieId=$movieId"
 
                 val request = object: JsonObjectRequest(Method.GET,api,null,
                     {
@@ -147,11 +147,11 @@ class MovieScheduleActivity : AppCompatActivity() {
                             else{
                                 val result = it.get("result") as JSONObject
 
-                                val scheduleList:MutableMap<Date,ArrayList<Schedule>> = HashMap()
+                                val scheduleList:MutableMap<Date,MutableMap<String,ArrayList<Schedule>>> = HashMap()
                                 val dateList:ArrayList<Date> = ArrayList()
 
                                 if(result.length() == 0){
-                                    Toast.makeText(this,"No Schedule Available",Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this,"No Schedule Available", Toast.LENGTH_SHORT).show()
                                 }
 
                                 result.keys().forEach { key ->
@@ -159,33 +159,49 @@ class MovieScheduleActivity : AppCompatActivity() {
                                     if(time != null){
                                         val scheduleDate = Date(time)
                                         dateList.add(scheduleDate)
-                                        val schedules = result.get(key) as JSONArray
-                                        for(i in 0 until schedules.length()){
-                                            val schedule = Schedule.toObject(schedules[i] as JSONObject)
 
-                                            if(schedule != null){
-                                                if(scheduleList.containsKey(scheduleDate)){
-                                                    val list = scheduleList[scheduleDate]
-                                                    list!!.add(schedule)
-                                                    list.sortBy { item -> item.startTime }
-                                                }
-                                                else{
-                                                    val list:ArrayList<Schedule> = ArrayList()
-                                                    list.add(schedule)
-                                                    scheduleList[scheduleDate] = list
+                                        val dailySchedule:MutableMap<String,ArrayList<Schedule>> = HashMap()
+
+                                        val branchesSchedule = result.get(key) as JSONObject
+                                        branchesSchedule.keys().forEach { branchName ->
+                                            //Each Branch
+                                            val schedules = branchesSchedule.get(branchName) as JSONArray
+
+                                            for(i in 0 until schedules.length()){
+                                                val schedule = Schedule.toObject(schedules[i] as JSONObject)
+
+                                                if(schedule != null){
+                                                    if(dailySchedule.containsKey(branchName)){
+                                                        val list = dailySchedule[branchName]
+                                                        list!!.add(schedule)
+                                                        list.sortBy { item -> item.startTime }
+                                                    }
+                                                    else{
+                                                        val list:ArrayList<Schedule> = ArrayList()
+                                                        list.add(schedule)
+                                                        dailySchedule[branchName] = list
+                                                    }
                                                 }
                                             }
                                         }
+                                        //Done For one Day
+                                        scheduleList[scheduleDate] = dailySchedule
                                     }
                                     else{
                                         Log.e(TAG,"$key is unparseable date")
                                     }
                                 }
                                 dateList.sort()
-                                val adapter = DateRecycleAdapter(dateList,object:DateRecycleAdapter.ClickListener{
+                                val adapter = DateRecycleAdapter(dateList,object:
+                                    DateRecycleAdapter.ClickListener{
                                     override fun onItemClick(position: Int, v: View?) {
                                         val dateSelected = dateList[position]
-                                        val scheduleRecycleAdapter = ScheduleRecycleAdapter(scheduleList[dateSelected]!!)
+
+                                        val branchList:MutableList<String> = ArrayList()
+                                        scheduleList[dateSelected]!!.keys.forEach {
+                                            branchList.add(it)
+                                        }
+                                        val scheduleRecycleAdapter = ScheduleWithBranchRecycleAdapter(branchList,scheduleList[dateSelected]!!)
                                         binding.scheduleList.swapAdapter(AlphaInAnimationAdapter(scheduleRecycleAdapter),false)
                                     }
 
@@ -194,7 +210,12 @@ class MovieScheduleActivity : AppCompatActivity() {
                                 //Set Default View For Schedule
                                 if(dateList.size > 0){
                                     val dateSelected = dateList[0]
-                                    val scheduleRecycleAdapter = ScheduleRecycleAdapter(scheduleList[dateSelected]!!)
+
+                                    val branchList:MutableList<String> = ArrayList()
+                                    scheduleList[dateSelected]!!.keys.forEach {
+                                        branchList.add(it)
+                                    }
+                                    val scheduleRecycleAdapter = ScheduleWithBranchRecycleAdapter(branchList,scheduleList[dateSelected]!!)
 
                                     binding.scheduleList.adapter = scheduleRecycleAdapter
                                 }
@@ -254,7 +275,7 @@ class MovieScheduleActivity : AppCompatActivity() {
                     @Throws(AuthFailureError::class)
                     override fun getHeaders(): Map<String, String> {
                         val headers = HashMap<String, String>()
-                        Singleton.getInstance(this@MovieScheduleActivity).addSessionCookie(headers)
+                        Singleton.getInstance(this@MovieScheduleWithBranchActivity).addSessionCookie(headers)
                         return headers
                     }
                 }

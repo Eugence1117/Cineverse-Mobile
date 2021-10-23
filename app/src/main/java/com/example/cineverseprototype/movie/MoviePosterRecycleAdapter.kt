@@ -1,5 +1,6 @@
 package com.example.cineverseprototype.movie
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.android.tools.build.jetifier.core.utils.Log
 import com.example.cineverseprototype.R
 import com.example.cineverseprototype.Singleton
 
@@ -28,6 +30,11 @@ class MoviePosterRecycleAdapter(private val movieList:ArrayList<Movie>): Recycle
 
         Singleton.getInstance(holder.itemView.context).picasso.load(movieList[position].picURL).placeholder(
             R.drawable.baseline_image_grey_400_48dp).into(holder.itemView.findViewById<ImageView>(R.id.movieImage))
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context,MovieScheduleWithBranchActivity::class.java)
+            intent.putExtra("movie",movieList[position])
+            holder.itemView.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {

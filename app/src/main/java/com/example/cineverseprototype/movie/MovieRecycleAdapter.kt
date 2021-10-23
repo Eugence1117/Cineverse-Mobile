@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cineverseprototype.R
 import com.example.cineverseprototype.Singleton
 
-class MovieRecycleAdapter(private val movieList:ArrayList<Movie>) : RecyclerView.Adapter<MovieRecycleAdapter.MovieViewHolder>() {
+class MovieRecycleAdapter(private val movieList:ArrayList<Movie>, private val branchId:String) : RecyclerView.Adapter<MovieRecycleAdapter.MovieViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.movie_item,parent,false)
@@ -24,10 +24,7 @@ class MovieRecycleAdapter(private val movieList:ArrayList<Movie>) : RecyclerView
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context,MovieScheduleActivity::class.java)
             intent.putExtra("movie",movieList[position])
-            intent.putExtra("movieName",movieList[position].movieName)
-            intent.putExtra("movieId",movieList[position].movieId)
-            intent.putExtra("movieImg",movieList[position].picURL)
-            intent.putExtra("moviePlot",movieList[position].synopsis)
+            intent.putExtra("branchId",branchId)
             holder.itemView.context.startActivity(intent)
         }
         //holder.itemView.findViewById<TextView>(R.id.censorship).text = movieList[position].censorship

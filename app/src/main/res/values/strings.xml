@@ -162,5 +162,7 @@
     <string name="action_settings">Settings</string>
     <string name="searchCinemaLabel">Search Cinema</string>
     <string name="bookLabel">Book Now</string>
+    <string name="title_activity_movie_schedule_with_branch">MovieScheduleWithBranchActivity
+    </string>
     1
 </resources>
