@@ -1,7 +1,9 @@
 package com.example.cineverseprototype.schedule
 
+import android.content.Intent
 import android.graphics.Color
 import android.text.SpannableStringBuilder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +12,7 @@ import android.widget.TextView
 import androidx.core.text.color
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cineverseprototype.R
-import com.example.cineverseprototype.movie.MovieRecycleAdapter
+import com.example.cineverseprototype.theatre.SeatBookingActivity
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -37,6 +39,13 @@ class ScheduleRecycleAdapter(val scheduleList:ArrayList<Schedule>): RecyclerView
             .append("/${scheduleList[position].capacity.totalSeat}")
 
         holder.itemView.findViewById<TextView>(R.id.capacity).text = seatInfo
+
+        holder.itemView.setOnClickListener {
+            val scheduleId = scheduleList[position].scheduleId
+            val intent = Intent(holder.itemView.context,SeatBookingActivity::class.java)
+            intent.putExtra("scheduleId",scheduleId)
+            holder.itemView.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {

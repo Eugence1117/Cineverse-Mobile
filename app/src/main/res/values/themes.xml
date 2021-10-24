@@ -41,4 +41,14 @@
     <style name="Theme.CineversePrototype.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.CineversePrototype.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="seat_button">
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:shadowColor">#FF000000</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/chair_button</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
 </resources>

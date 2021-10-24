@@ -133,7 +133,7 @@ class MovieScheduleWithBranchActivity : AppCompatActivity() {
                 showLoading()
                 val queue = Singleton.getInstance(this).requestQueue
 
-                val retryPolicy = DefaultRetryPolicy(60000, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+                val retryPolicy = DefaultRetryPolicy(20000, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
                 val api = "$domain/api/retrieveScheduleByMovie?movieId=$movieId"
 
                 val request = object: JsonObjectRequest(Method.GET,api,null,
@@ -169,7 +169,6 @@ class MovieScheduleWithBranchActivity : AppCompatActivity() {
 
                                             for(i in 0 until schedules.length()){
                                                 val schedule = Schedule.toObject(schedules[i] as JSONObject)
-
                                                 if(schedule != null){
                                                     if(dailySchedule.containsKey(branchName)){
                                                         val list = dailySchedule[branchName]

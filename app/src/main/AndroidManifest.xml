@@ -13,10 +13,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CineversePrototype">
+        <activity android:name=".theatre.SeatBookingActivity"
+            android:theme="@style/Theme.CineverseActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
         <activity
             android:name=".movie.MovieScheduleWithBranchActivity"
             android:label="@string/title_activity_movie_schedule_with_branch"
-            android:theme="@style/Theme.CineversePrototype.NoActionBar"></activity>
+            android:theme="@style/Theme.CineversePrototype.NoActionBar" />
         <activity
             android:name=".movie.MovieScheduleActivity"
             android:label="@string/title_activity_movie_schedule">

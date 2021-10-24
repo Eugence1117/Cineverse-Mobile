@@ -24,9 +24,6 @@ class ScheduleWithBranchRecycleAdapter(val branchList:MutableList<String>, val s
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
         holder.itemView.findViewById<TextView>(R.id.branchName).text = branchList[position]
 
-        Log.i("TAG","Branches:${branchList[position]} Position:$position")
-        Log.i("TAG","Branches Schedule ${scheduleList[branchList[position]]}")
-
         val schedules = scheduleList[branchList[position]]
         if(schedules!=null){
             val adapter = ScheduleRecycleAdapter(schedules)
