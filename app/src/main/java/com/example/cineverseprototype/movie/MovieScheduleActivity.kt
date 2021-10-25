@@ -198,6 +198,7 @@ class MovieScheduleActivity : AppCompatActivity() {
 
                                     binding.scheduleList.adapter = scheduleRecycleAdapter
                                 }
+
                             }
                         }
                         catch (ex: JSONException){

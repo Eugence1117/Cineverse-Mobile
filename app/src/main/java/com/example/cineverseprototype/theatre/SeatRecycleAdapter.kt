@@ -71,7 +71,7 @@ class SeatRecycleAdapter(private val seatList:ArrayList<Any>) : RecyclerView.Ada
                 (holder.itemView as CheckBox).isChecked = true
             }
             else{
-                holder.itemView.tag = seatList[position]
+                holder.itemView.tag = seat.seatNum
             }
         }
         else if (holder.itemViewType == LABEL_VIEW_TYPE){

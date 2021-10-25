@@ -132,14 +132,15 @@
 
     <!--This is the backdrop's content with a BottomSheetBehaviour applied to it-->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize">
 
         <LinearLayout
             android:id="@+id/contentLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="@drawable/ic_list_header_background"
             app:behavior_peekHeight="56dp"
@@ -150,7 +151,7 @@
             <!--And finally this is the body of the backdrop's content. You can add here whatever you need inside a view group (LinearLayout, RelativeLayout, SwipeRefreshLayout, ConstraintLayout, etc.)-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="900dp"
+                android:layout_height="match_parent"
                 android:background="#ffffff"
                 android:orientation="vertical">
 
@@ -185,14 +186,21 @@
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray"
                     app:layout_constraintBottom_toBottomOf="parent" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/scheduleList"
+                
+                <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/schedule_item"/>
+                    android:layout_height="wrap_content"
+                    android:fitsSystemWindows="true"
+                    android:overScrollMode="never">
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/scheduleList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/schedule_item"/>
+
+                </androidx.core.widget.NestedScrollView>
             </LinearLayout>
 
         </LinearLayout>
