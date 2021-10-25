@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CineversePrototype">
-        <activity android:name=".theatre.SeatBookingActivity"
+        <activity android:name=".payment.PaymentActivity"></activity>
+        <activity
+            android:name=".theatre.SeatBookingActivity"
             android:theme="@style/Theme.CineverseActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

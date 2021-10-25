@@ -4,7 +4,7 @@ import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
 
-class SeatLayout(val layoutId:String,val seatCol:Int,val seatRow:Int,val rows:ArrayList<SeatRow>) {
+class SeatLayout(val layoutId:String,val seatCol:Int,val seatRow:Int,val price:Double,val rows:ArrayList<SeatRow>) {
 
     fun convertToColumn():ArrayList<Any>{
         val  columns = ArrayList<Any>()
@@ -43,6 +43,7 @@ class SeatLayout(val layoutId:String,val seatCol:Int,val seatRow:Int,val rows:Ar
                                 for(col in seatColumns){
                                     if(col.seatNum == seatNum){
                                         isFound = true
+                                        col.seatPrice = price
                                         columns.add(col)
                                         if(!col.reference.isNullOrEmpty()){
                                             skipNext = true
@@ -84,6 +85,7 @@ class SeatLayout(val layoutId:String,val seatCol:Int,val seatRow:Int,val rows:Ar
                 val layoutId = obj.getString("layoutId")
                 val seatRow = obj.getInt("seatRow")
                 val seatCol = obj.getInt("seatCol")
+                val price = obj.getDouble("price")
                 val rowList = obj.getJSONArray("seatLayout")
 
                 val rows = ArrayList<SeatRow>()
@@ -92,7 +94,7 @@ class SeatLayout(val layoutId:String,val seatCol:Int,val seatRow:Int,val rows:Ar
                     rows.add(SeatRow.toObject(row))
                 }
 
-                SeatLayout(layoutId,seatCol,seatRow,rows)
+                SeatLayout(layoutId,seatCol,seatRow,price,rows)
 
             } catch (ex: JSONException){
                 Log.e(TAG,ex.stackTraceToString())
@@ -118,6 +120,8 @@ class SeatLayout(val layoutId:String,val seatCol:Int,val seatRow:Int,val rows:Ar
     }
 
     class SeatCol(val seatNum:String, val isBind:Boolean, val reference:String, val isSelected:Boolean){
+
+        var seatPrice:Double = 0.0
 
         companion object{
             fun toObject(obj:JSONObject):SeatCol{

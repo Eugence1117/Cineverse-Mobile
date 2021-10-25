@@ -165,5 +165,8 @@
     <string name="title_activity_movie_schedule_with_branch">MovieScheduleWithBranchActivity
     </string>
     <string name="paymentLabel">Proceed to Payment</string>
+    <string name="itemLabel">Items</string>
+    <string name="priceLabel">RM</string>
+    <string name="currency">RM</string>
     1
 </resources>

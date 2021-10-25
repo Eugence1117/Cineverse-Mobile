@@ -1,5 +1,6 @@
 package com.example.cineverseprototype.theatre
 
+import android.animation.ValueAnimator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -30,8 +31,8 @@ class SeatBookingActivity : AppCompatActivity() {
     private lateinit var binding:ActivitySeatBookingBinding
     private var toastBox:Toast? = null
     private val TAG = javaClass.name
-    private var mScale = 1f
 
+    private var totalPrice:Double = 0.0
     private val seatSelected:MutableSet<String> = HashSet<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,10 +62,12 @@ class SeatBookingActivity : AppCompatActivity() {
         else{
             val dateFormat = SimpleDateFormat("dd MMM yyyy")
             val timeFormat = SimpleDateFormat("hh:mm a")
+            binding.movieName.text = movie.movieName
             binding.branchName.text = schedule.branchName
             binding.scheduleDate.text = dateFormat.format(schedule.startTime)
             binding.scheduleTime.text = timeFormat.format(schedule.startTime)
             binding.seatSelected.text = "${seatSelected.size} Seat Selected "
+            binding.price.text = String.format("%.2f",totalPrice)
 
             retrieveData(schedule.scheduleId)
 
@@ -74,8 +77,7 @@ class SeatBookingActivity : AppCompatActivity() {
                     showToastBox(toast)
                 }
                 else{
-                    val toast = Toast.makeText(this@SeatBookingActivity,"No Seat Selected. Minimum 1 seat is required.",Toast.LENGTH_SHORT)
-                    showToastBox(toast)
+                    Singleton.getInstance(applicationContext).showToast("No Seat Selected. Minimum 1 seat is required.",Toast.LENGTH_SHORT)
                 }
             }
         }
@@ -98,13 +100,21 @@ class SeatBookingActivity : AppCompatActivity() {
         }
     }
 
+    private fun updatePrice(before:Double,after:Double){
+        val animator = ValueAnimator.ofFloat(before.toFloat(),after.toFloat())
+        animator.duration = 300
+        animator.addUpdateListener {
+            binding.price.text = String.format("%.2f",it.animatedValue as Float)
+        }
+        animator.start()
+    }
+
     private fun retrieveData(scheduleId:String){
         val preference = Singleton.getInstance(this).preference
         val expiredDialog = Util.createSessionExpiredDialog(this)
         val domain = preference.getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
         if(domain == null){
-            Toast.makeText(this,"No connection established. Please specify the connection in Setting.",
-                Toast.LENGTH_LONG).show()
+            Singleton.getInstance(applicationContext).showToast("No connection established. Please specify the connection in Setting.",Toast.LENGTH_LONG)
         }
         else{
             val cookie = preference.getString(Constant.SESSION_COOKIE,null)
@@ -144,10 +154,12 @@ class SeatBookingActivity : AppCompatActivity() {
                                                     if(seatSelected.size >= 6){
                                                         button.isChecked = false
 
-                                                        val toast = Toast.makeText(this@SeatBookingActivity,"Maximum Seat Reached.",Toast.LENGTH_SHORT)
-                                                        showToastBox(toast)
+                                                        Singleton.getInstance(applicationContext).showToast("Maximum Seat Reached.",Toast.LENGTH_SHORT)
                                                     }
                                                     else{
+                                                        val previousPrice = totalPrice
+                                                        totalPrice += seat.seatPrice
+                                                        updatePrice(previousPrice,totalPrice)
                                                         seatSelected.add(seat.seatNum)
                                                         if(!seat.reference.isNullOrEmpty()){
                                                             seatSelected.add(seat.reference)
@@ -155,6 +167,9 @@ class SeatBookingActivity : AppCompatActivity() {
                                                     }
                                                 }
                                                 else{
+                                                    val previousPrice = totalPrice
+                                                    totalPrice -= seat.seatPrice
+                                                    updatePrice(previousPrice,totalPrice)
                                                     seatSelected.remove(seat.seatNum)
                                                     if(!seat.reference.isNullOrEmpty()){
                                                         seatSelected.remove(seat.reference)
@@ -185,8 +200,8 @@ class SeatBookingActivity : AppCompatActivity() {
                         }
                         catch (ex: JSONException){
                             Log.e(TAG,ex.stackTraceToString())
-                            Toast.makeText(this,"Unable to process the data from server. Please try again later.",
-                                Toast.LENGTH_SHORT).show()
+                            Singleton.getInstance(applicationContext).showToast("Unable to process the data from server. Please try again later.",
+                                Toast.LENGTH_SHORT)
                         }
                     },
                     {

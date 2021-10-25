@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.util.LruCache
+import android.widget.Toast
 import androidx.preference.PreferenceManager
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -47,6 +48,18 @@ class Singleton constructor(context: Context) {
 
     val picasso:Picasso by lazy{
         Picasso.get()
+    }
+
+    val toast: Toast by lazy{
+        Toast(context)
+    }
+
+    fun showToast(msg:String,length:Int){
+        toast.cancel()
+
+        toast.setText(msg)
+        toast.duration = length
+        toast.show()
     }
 
     val preference: SharedPreferences by lazy {
