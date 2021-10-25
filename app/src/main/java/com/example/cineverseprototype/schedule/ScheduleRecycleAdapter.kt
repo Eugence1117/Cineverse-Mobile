@@ -12,12 +12,13 @@ import android.widget.TextView
 import androidx.core.text.color
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cineverseprototype.R
+import com.example.cineverseprototype.movie.Movie
 import com.example.cineverseprototype.theatre.SeatBookingActivity
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ScheduleRecycleAdapter(val scheduleList:ArrayList<Schedule>): RecyclerView.Adapter<ScheduleRecycleAdapter.ScheduleViewHolder>() {
+class ScheduleRecycleAdapter(val scheduleList:ArrayList<Schedule>, val movie: Movie): RecyclerView.Adapter<ScheduleRecycleAdapter.ScheduleViewHolder>() {
 
     class ScheduleViewHolder(view: View):RecyclerView.ViewHolder(view){
 
@@ -41,9 +42,10 @@ class ScheduleRecycleAdapter(val scheduleList:ArrayList<Schedule>): RecyclerView
         holder.itemView.findViewById<TextView>(R.id.capacity).text = seatInfo
 
         holder.itemView.setOnClickListener {
-            val scheduleId = scheduleList[position].scheduleId
+            val schedule = scheduleList[position]
             val intent = Intent(holder.itemView.context,SeatBookingActivity::class.java)
-            intent.putExtra("scheduleId",scheduleId)
+            intent.putExtra("movie",movie)
+            intent.putExtra("schedule",schedule)
             holder.itemView.context.startActivity(intent)
         }
     }

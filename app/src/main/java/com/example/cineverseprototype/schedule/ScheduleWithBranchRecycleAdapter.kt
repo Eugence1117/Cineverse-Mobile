@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cineverseprototype.R
+import com.example.cineverseprototype.movie.Movie
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ScheduleWithBranchRecycleAdapter(val branchList:MutableList<String>, val scheduleList:Map<String,ArrayList<Schedule>>): RecyclerView.Adapter<ScheduleWithBranchRecycleAdapter.ScheduleViewHolder>() {
+class ScheduleWithBranchRecycleAdapter(val branchList:MutableList<String>, val scheduleList:Map<String,ArrayList<Schedule>>, val movie: Movie): RecyclerView.Adapter<ScheduleWithBranchRecycleAdapter.ScheduleViewHolder>() {
 
     class ScheduleViewHolder(view: View):RecyclerView.ViewHolder(view)
 
@@ -26,7 +27,7 @@ class ScheduleWithBranchRecycleAdapter(val branchList:MutableList<String>, val s
 
         val schedules = scheduleList[branchList[position]]
         if(schedules!=null){
-            val adapter = ScheduleRecycleAdapter(schedules)
+            val adapter = ScheduleRecycleAdapter(schedules,movie)
             val recyclerView = holder.itemView.findViewById<RecyclerView>(R.id.scheduleList)
             recyclerView.adapter = adapter
 

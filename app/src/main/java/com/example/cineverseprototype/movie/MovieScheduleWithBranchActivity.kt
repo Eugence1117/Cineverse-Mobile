@@ -79,7 +79,7 @@ class MovieScheduleWithBranchActivity : AppCompatActivity() {
                 Date(movie.releaseDate)))
             binding.movieType.text =  SpannableStringBuilder().bold {append("Type : ")}.append(movie.movieType)
 
-            getData(movie.movieId)
+            getData(movie)
         }
 
         val sheetBehavior = BottomSheetBehavior.from(binding.contentLayout)
@@ -116,7 +116,7 @@ class MovieScheduleWithBranchActivity : AppCompatActivity() {
         binding.progress.hide()
     }
 
-    private fun getData(movieId:String){
+    private fun getData(movie:Movie){
         val preference = Singleton.getInstance(this).preference
         val expiredDialog = Util.createSessionExpiredDialog(this)
         val domain = preference.getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
@@ -134,7 +134,7 @@ class MovieScheduleWithBranchActivity : AppCompatActivity() {
                 val queue = Singleton.getInstance(this).requestQueue
 
                 val retryPolicy = DefaultRetryPolicy(20000, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
-                val api = "$domain/api/retrieveScheduleByMovie?movieId=$movieId"
+                val api = "$domain/api/retrieveScheduleByMovie?movieId=${movie.movieId}"
 
                 val request = object: JsonObjectRequest(Method.GET,api,null,
                     {
@@ -200,7 +200,7 @@ class MovieScheduleWithBranchActivity : AppCompatActivity() {
                                         scheduleList[dateSelected]!!.keys.forEach {
                                             branchList.add(it)
                                         }
-                                        val scheduleRecycleAdapter = ScheduleWithBranchRecycleAdapter(branchList,scheduleList[dateSelected]!!)
+                                        val scheduleRecycleAdapter = ScheduleWithBranchRecycleAdapter(branchList,scheduleList[dateSelected]!!,movie)
                                         binding.scheduleList.swapAdapter(AlphaInAnimationAdapter(scheduleRecycleAdapter),false)
                                     }
 
@@ -214,7 +214,7 @@ class MovieScheduleWithBranchActivity : AppCompatActivity() {
                                     scheduleList[dateSelected]!!.keys.forEach {
                                         branchList.add(it)
                                     }
-                                    val scheduleRecycleAdapter = ScheduleWithBranchRecycleAdapter(branchList,scheduleList[dateSelected]!!)
+                                    val scheduleRecycleAdapter = ScheduleWithBranchRecycleAdapter(branchList,scheduleList[dateSelected]!!,movie)
 
                                     binding.scheduleList.adapter = scheduleRecycleAdapter
                                 }

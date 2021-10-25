@@ -3,7 +3,10 @@ package com.example.cineverseprototype.theatre
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
+import android.view.*
+import android.view.animation.ScaleAnimation
+import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,24 +18,31 @@ import com.example.cineverseprototype.Util
 import com.example.cineverseprototype.databinding.ActivitySeatBookingBinding
 import com.example.cineverseprototype.movie.Movie
 import com.example.cineverseprototype.movie.MovieRecycleAdapter
+import com.example.cineverseprototype.schedule.Schedule
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.HttpURLConnection
+import java.text.SimpleDateFormat
 
 class SeatBookingActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivitySeatBookingBinding
+    private var toastBox:Toast? = null
     private val TAG = javaClass.name
+    private var mScale = 1f
+
+    private val seatSelected:MutableSet<String> = HashSet<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySeatBookingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val scheduleId:String? = intent.getStringExtra("scheduleId")
+        supportActionBar?.title = "Select Seats"
+        val schedule = intent.getSerializableExtra("schedule") as? Schedule
+        val movie = intent.getSerializableExtra("movie") as? Movie
 
-        Log.i(TAG,"ScheduleId=$scheduleId")
         val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder.setTitle("Error")
         dialogBuilder.setMessage("Unable to identify the schedule that you selected. Please try again later.")
@@ -45,11 +55,29 @@ class SeatBookingActivity : AppCompatActivity() {
 
         val errorDialog = dialogBuilder.create()
 
-        if(scheduleId.isNullOrEmpty()){
+        if(schedule == null || movie == null){
             errorDialog.show()
         }
         else{
-            retrieveData(scheduleId)
+            val dateFormat = SimpleDateFormat("dd MMM yyyy")
+            val timeFormat = SimpleDateFormat("hh:mm a")
+            binding.branchName.text = schedule.branchName
+            binding.scheduleDate.text = dateFormat.format(schedule.startTime)
+            binding.scheduleTime.text = timeFormat.format(schedule.startTime)
+            binding.seatSelected.text = "${seatSelected.size} Seat Selected "
+
+            retrieveData(schedule.scheduleId)
+
+            binding.paymentBtn.setOnClickListener {
+                if(seatSelected.size > 0){
+                    val toast = Toast.makeText(this@SeatBookingActivity,"Redirecting to Payment Merchant",Toast.LENGTH_SHORT)
+                    showToastBox(toast)
+                }
+                else{
+                    val toast = Toast.makeText(this@SeatBookingActivity,"No Seat Selected. Minimum 1 seat is required.",Toast.LENGTH_SHORT)
+                    showToastBox(toast)
+                }
+            }
         }
     }
 
@@ -59,6 +87,15 @@ class SeatBookingActivity : AppCompatActivity() {
 
     private fun hideLoading(){
         binding.progress.hide()
+    }
+
+    private fun updateSeatUI(){
+        if(seatSelected.size > 1){
+            binding.seatSelected.text = "${seatSelected.size} Seats Selected"
+        }
+        else{
+            binding.seatSelected.text = "${seatSelected.size} Seat Selected"
+        }
     }
 
     private fun retrieveData(scheduleId:String){
@@ -94,7 +131,40 @@ class SeatBookingActivity : AppCompatActivity() {
                                 if(seatLayout != null){
                                     Log.i(TAG,seatLayout.toString())
                                     val layoutManager = GridLayoutManager(this,seatLayout.seatCol+1)
-                                    val adapter = SeatRecycleAdapter(seatLayout.convertToColumn())
+                                    val adapter = SeatRecycleAdapter(seatLayout.convertToColumn(),object:SeatRecycleAdapter.CheckListener{
+
+                                        override fun onCheckChanged(
+                                            position: Int,
+                                            button: CompoundButton,
+                                            isChecked: Boolean,
+                                        ) {
+                                            if(button is CheckBox){
+                                                val seat = button.tag as SeatLayout.SeatCol
+                                                if(button.isChecked){
+                                                    if(seatSelected.size >= 6){
+                                                        button.isChecked = false
+
+                                                        val toast = Toast.makeText(this@SeatBookingActivity,"Maximum Seat Reached.",Toast.LENGTH_SHORT)
+                                                        showToastBox(toast)
+                                                    }
+                                                    else{
+                                                        seatSelected.add(seat.seatNum)
+                                                        if(!seat.reference.isNullOrEmpty()){
+                                                            seatSelected.add(seat.reference)
+                                                        }
+                                                    }
+                                                }
+                                                else{
+                                                    seatSelected.remove(seat.seatNum)
+                                                    if(!seat.reference.isNullOrEmpty()){
+                                                        seatSelected.remove(seat.reference)
+                                                    }
+                                                }
+                                                updateSeatUI()
+                                            }
+                                        }
+
+                                    })
                                     binding.seatLayout.adapter = adapter
                                     layoutManager.spanSizeLookup = object:GridLayoutManager.SpanSizeLookup(){
                                         override fun getSpanSize(position: Int): Int {
@@ -176,6 +246,13 @@ class SeatBookingActivity : AppCompatActivity() {
         }
     }
 
+    private fun showToastBox(toast:Toast){
+        if(toastBox != null){
+            toastBox!!.cancel()
+        }
+        toastBox = toast
+        toastBox!!.show()
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == android.R.id.home){
             onBackPressed()
@@ -183,4 +260,5 @@ class SeatBookingActivity : AppCompatActivity() {
         }
         return false
     }
+
 }

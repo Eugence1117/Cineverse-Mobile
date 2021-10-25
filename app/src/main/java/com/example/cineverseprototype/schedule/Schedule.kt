@@ -4,8 +4,9 @@ import android.util.Log
 import com.example.cineverseprototype.R
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.Serializable
 
-class Schedule(val scheduleId:String, val startTime:Long, val endTime:Long, val type:String, val branchName:String, val capacity: Capacity) {
+class Schedule(val scheduleId:String, val startTime:Long, val endTime:Long, val type:String, val branchName:String, val capacity: Capacity) : Serializable{
 
     fun getTheatreColor():String{
         return if(type == "Beanie"){

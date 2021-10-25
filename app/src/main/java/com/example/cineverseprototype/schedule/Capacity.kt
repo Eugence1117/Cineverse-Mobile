@@ -3,8 +3,9 @@ package com.example.cineverseprototype.schedule
 import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.Serializable
 
-class Capacity(val seatOccupied:Int, val totalSeat:Int) {
+class Capacity(val seatOccupied:Int, val totalSeat:Int) : Serializable{
 
     fun getColor():String{
         val percentage = ((seatOccupied / totalSeat ) * 100).toInt()

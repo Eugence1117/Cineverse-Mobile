@@ -80,7 +80,7 @@ class MovieScheduleActivity : AppCompatActivity() {
             binding.movieReleaseDate.text =  SpannableStringBuilder().bold {append("Release Date : ")}.append(format.format(Date(movie.releaseDate)))
             binding.movieType.text =  SpannableStringBuilder().bold {append("Type : ")}.append(movie.movieType)
 
-            getData(branchId,movie.movieId)
+            getData(branchId,movie)
         }
 
         val sheetBehavior = BottomSheetBehavior.from(binding.contentLayout)
@@ -117,7 +117,7 @@ class MovieScheduleActivity : AppCompatActivity() {
         binding.progress.hide()
     }
 
-    private fun getData(branchId:String,movieId:String){
+    private fun getData(branchId:String,movie:Movie){
         val preference = Singleton.getInstance(this).preference
         val expiredDialog = Util.createSessionExpiredDialog(this)
         val domain = preference.getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
@@ -134,7 +134,7 @@ class MovieScheduleActivity : AppCompatActivity() {
                 showLoading()
                 val queue = Singleton.getInstance(this).requestQueue
                 val retryPolicy = DefaultRetryPolicy(20000, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
-                val api = "$domain/api/retrieveScheduleByMovieAndBranch?branchId=$branchId&movieId=$movieId"
+                val api = "$domain/api/retrieveScheduleByMovieAndBranch?branchId=$branchId&movieId=${movie.movieId}"
 
                 val request = object: JsonObjectRequest(Method.GET,api,null,
                     {
@@ -185,7 +185,7 @@ class MovieScheduleActivity : AppCompatActivity() {
                                 val adapter = DateRecycleAdapter(dateList,object:DateRecycleAdapter.ClickListener{
                                     override fun onItemClick(position: Int, v: View?) {
                                         val dateSelected = dateList[position]
-                                        val scheduleRecycleAdapter = ScheduleRecycleAdapter(scheduleList[dateSelected]!!)
+                                        val scheduleRecycleAdapter = ScheduleRecycleAdapter(scheduleList[dateSelected]!!,movie)
                                         binding.scheduleList.swapAdapter(AlphaInAnimationAdapter(scheduleRecycleAdapter),false)
                                     }
 
@@ -194,11 +194,10 @@ class MovieScheduleActivity : AppCompatActivity() {
                                 //Set Default View For Schedule
                                 if(dateList.size > 0){
                                     val dateSelected = dateList[0]
-                                    val scheduleRecycleAdapter = ScheduleRecycleAdapter(scheduleList[dateSelected]!!)
+                                    val scheduleRecycleAdapter = ScheduleRecycleAdapter(scheduleList[dateSelected]!!,movie)
 
                                     binding.scheduleList.adapter = scheduleRecycleAdapter
                                 }
-
                             }
                         }
                         catch (ex: JSONException){

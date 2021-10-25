@@ -164,5 +164,6 @@
     <string name="bookLabel">Book Now</string>
     <string name="title_activity_movie_schedule_with_branch">MovieScheduleWithBranchActivity
     </string>
+    <string name="paymentLabel">Proceed to Payment</string>
     1
 </resources>
