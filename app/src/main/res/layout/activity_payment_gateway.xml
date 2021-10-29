@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".payment.PaymentGateway">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/baseline_close_white_24dp"
+            app:title="@string/paymentText"
+            android:textAlignment="center"
+            app:titleTextColor="@color/secondaryTextColor"
+            app:subtitleTextColor="@color/secondaryTextColor">
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="16dp">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:text="Payment Merchant Gateway"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="?attr/textAppearanceHeadline6"
+                    android:textAlignment="center"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:text="Pay"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnExpire"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:text="Expire"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:text="Cancel"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

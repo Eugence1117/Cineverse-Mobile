@@ -70,6 +70,7 @@ class ResetPasswordActivity : AppCompatActivity() {
                                 }
                                 else{
                                     Toast.makeText(this,response.getString("msg"),Toast.LENGTH_LONG).show()
+                                    finish()
                                 }
                             }
                             catch(ex: JSONException){

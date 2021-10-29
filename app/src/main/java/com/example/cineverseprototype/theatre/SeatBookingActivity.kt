@@ -1,6 +1,7 @@
 package com.example.cineverseprototype.theatre
 
 import android.animation.ValueAnimator
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +20,7 @@ import com.example.cineverseprototype.Util
 import com.example.cineverseprototype.databinding.ActivitySeatBookingBinding
 import com.example.cineverseprototype.movie.Movie
 import com.example.cineverseprototype.movie.MovieRecycleAdapter
+import com.example.cineverseprototype.payment.PaymentActivity
 import com.example.cineverseprototype.schedule.Schedule
 import org.json.JSONArray
 import org.json.JSONException
@@ -73,8 +75,14 @@ class SeatBookingActivity : AppCompatActivity() {
 
             binding.paymentBtn.setOnClickListener {
                 if(seatSelected.size > 0){
-                    val toast = Toast.makeText(this@SeatBookingActivity,"Redirecting to Payment Merchant",Toast.LENGTH_SHORT)
-                    showToastBox(toast)
+
+                   val intent  = Intent(this, PaymentActivity::class.java)
+
+                    val arrayList = ArrayList<String>()
+                    arrayList.addAll(seatSelected)
+                    intent.putExtra("scheduleId",schedule.scheduleId)
+                    intent.putExtra("seatSelected",arrayList)
+                    startActivity(intent)
                 }
                 else{
                     Singleton.getInstance(applicationContext).showToast("No Seat Selected. Minimum 1 seat is required.",Toast.LENGTH_SHORT)
@@ -261,13 +269,6 @@ class SeatBookingActivity : AppCompatActivity() {
         }
     }
 
-    private fun showToastBox(toast:Toast){
-        if(toastBox != null){
-            toastBox!!.cancel()
-        }
-        toastBox = toast
-        toastBox!!.show()
-    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == android.R.id.home){
             onBackPressed()

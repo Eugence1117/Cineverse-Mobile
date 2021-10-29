@@ -1,4 +1,4 @@
-package com.example.cineverseprototype
+ package com.example.cineverseprototype
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -51,7 +51,7 @@ class Singleton constructor(context: Context) {
     }
 
     val toast: Toast by lazy{
-        Toast(context)
+        Toast.makeText(context,"",Toast.LENGTH_SHORT)
     }
 
     fun showToast(msg:String,length:Int){

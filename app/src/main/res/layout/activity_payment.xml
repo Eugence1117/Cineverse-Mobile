@@ -1,9 +1,472 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".payment.PaymentActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/baseline_close_white_24dp"
+            app:title="@string/paymentText"
+            android:textAlignment="center"
+            app:titleTextColor="@color/secondaryTextColor"
+            app:subtitleTextColor="@color/secondaryTextColor">
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+
+        <ScrollView
+            android:id="@+id/contentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:orientation="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/scheduleCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:contentPadding="10dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/scheduleLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/movieName"
+                            style="?attr/textAppearanceHeadline6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/baseline_movie_blue_24dp"
+                            android:drawablePadding="5dp"
+                            android:text="None"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                            android:id="@+id/scheduleContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="8dp"
+                            android:orientation="vertical"
+                            android:weightSum="2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/movieName">
+
+                            <TextView
+                                android:id="@+id/branchName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:drawableLeft="@drawable/round_store_mall_directory_grey_400_24dp"
+                                android:drawablePadding="3dp"
+                                android:gravity="center_vertical"
+                                android:text="None"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/theatreType"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:drawableLeft="@drawable/outline_living_grey_400_24dp"
+                                android:drawablePadding="3dp"
+                                android:text="None"
+                                android:gravity="center_vertical"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:orientation="horizontal"
+                                android:weightSum="2">
+
+                                <TextView
+                                    android:id="@+id/scheduleDate"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:drawableLeft="@drawable/baseline_calendar_today_grey_24dp"
+                                    android:drawablePadding="3dp"
+                                    android:text="None"
+                                    android:gravity="center_vertical"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/scheduleTime"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="None"
+                                    android:drawableLeft="@drawable/baseline_schedule_grey_400_24dp"
+                                    android:drawablePadding="3dp"
+                                    android:gravity="center_vertical"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/paymentCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:contentPadding="8dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/paymentLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/paymentTitle"
+                            style="?attr/textAppearanceHeadline5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/baseline_payment_black_36dp"
+                            android:drawablePadding="5dp"
+                            android:gravity="center_vertical"
+                            android:text="Payment Details"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                            android:id="@+id/paymentContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="4dp"
+                            android:layout_marginVertical="8dp"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/paymentTitle">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:id="@+id/ticketLabel"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ticket Price"
+                                    android:layout_weight="0.7"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/ticketPrice"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.3"
+                                    android:text="RM 0.00"
+                                    android:textAlignment="viewEnd"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:id="@+id/taxLabel"
+                                    android:layout_width="0dp"
+                                    android:text="Tax"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.7" />
+
+                                <TextView
+                                    android:id="@+id/taxPrice"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.3"
+                                    android:text="RM 0.00"
+                                    android:textAlignment="viewEnd"
+                                    android:textColor="@color/dangerColor" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:layout_marginVertical="2dp"
+                                android:background="@color/grayColor" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.7"
+                                    android:text="Subtotal"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/primaryTextColor"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/subTotal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.3"
+                                    android:text="RM 0.00"
+                                    android:textAlignment="viewEnd"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/primaryTextColor"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:id="@+id/voucherLabel"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.7"
+                                    android:text="Voucher Discount - none" />
+
+                                <TextView
+                                    android:id="@+id/discountAmount"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.3"
+                                    android:text="- RM 0.00"
+                                    android:textAlignment="viewEnd"
+                                    android:textColor="@color/successColor" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:layout_marginVertical="2dp"
+                                android:background="@color/grayColor" />
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:orientation="horizontal"
+                                android:paddingVertical="2dp"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.7"
+                                    android:text="GRAND TOTAL"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/primaryTextColor"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/grandTotal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.3"
+                                    android:text="RM 0.00"
+                                    android:textAlignment="viewEnd"
+                                    android:textColor="@color/primaryTextColor"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/voucherCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:contentPadding="8dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/voucherLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/voucherTitle"
+                            style="?attr/textAppearanceHeadline6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/baseline_confirmation_number_blue_24dp"
+                            android:drawablePadding="5dp"
+                            android:text="Voucher"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/voucherContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/voucherTitle">
+
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/voucherCode"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/voucherLabel"
+                                android:inputType="textNoSuggestions"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/applyBtn"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <Button
+                                android:id="@+id/applyBtn"
+                                android:layout_width="100dp"
+                                android:layout_height="40dp"
+                                android:text="APPLY"
+                                android:textSize="12sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <TextView
+                            android:id="@+id/voucherMsg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="15dp"
+                            android:text="@string/savingMsg"
+                            android:textSize="11sp"
+                            android:textStyle="italic"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/voucherContainer" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/paymentMethodCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:contentPadding="8dp">
+
+                    <LinearLayout
+                        android:id="@+id/paymentMethodLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="?attr/textAppearanceHeadline6"
+                            android:drawableLeft="@drawable/baseline_paid_black_24dp"
+                            android:drawablePadding="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Payment Method" />
+
+                        <RadioGroup
+                            android:id="@+id/paymentMethod"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <RadioButton
+                                android:id="@+id/internetBanking"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Internet Banking" />
+
+                            <RadioButton
+                                android:id="@+id/cardPayment"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Debit/Credit Card" />
+                        </RadioGroup>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginVertical="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/voucherCard">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/confirm_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:text="@string/confirmPaymentLabel" />
+
+                </FrameLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
