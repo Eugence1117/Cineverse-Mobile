@@ -122,40 +122,73 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        style="?attr/textAppearanceHeadline6"
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Last Purchase"
-                        android:drawableLeft="@drawable/baseline_payment_black_24dp"
-                        android:drawablePadding="10dp"
-                        />
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/materialTextView"
+                            style="?attr/textAppearanceHeadline6"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/baseline_payment_black_24dp"
+                            android:drawablePadding="10dp"
+                            android:text="Last Purchase"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/viewTransactionChip"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/viewTransactionChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="bottom"
+                            android:text="View All"
+                            app:chipIconSize="12dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="10dp">
+                        android:layout_height="match_parent">
 
-                        <ImageView
-                            android:id="@+id/emptyLogo"
+                        <LinearLayout
+                            android:id="@+id/emptyPaymentContainer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:layout_constraintBottom_toBottomOf="parent"
-
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/outline_receipt_grey_400_18dp" />
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/textView6"
+                            <ImageView
+                                android:id="@+id/emptyLogo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@drawable/outline_receipt_grey_400_18dp" />
+
+                            <TextView
+                                android:id="@+id/textView6"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="No purchase made yet"
+                                android:textAlignment="center"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <ListView
+                            android:id="@+id/paymentContainer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="No purchase made yet"
-                            android:textAlignment="center"
-                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/emptyLogo" />
+                            android:layout_marginVertical="8dp"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>

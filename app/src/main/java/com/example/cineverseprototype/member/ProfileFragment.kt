@@ -18,6 +18,8 @@ import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.example.cineverseprototype.*
 import com.example.cineverseprototype.R
+import com.example.cineverseprototype.payment.Payment
+import com.example.cineverseprototype.payment.PaymentCardListAdapter
 import com.example.cineverseprototype.picasso.CircleTransform
 import com.squareup.picasso.Callback
 import java.net.HttpURLConnection
@@ -47,20 +49,121 @@ class ProfileFragment : Fragment() {
 
         binding.refreshBtn.setOnRefreshListener {
             retrieveData()
+            retrievePaymentInfo()
         }
         retrieveData()
+        retrievePaymentInfo()
         return binding.root
     }
 
 
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        Log.i(TAG,"Recevied ${result.resultCode}")
+        Log.i(TAG,"Received ${result.resultCode}")
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
             val data: Intent = result.data!!
             var response = data!!.getBooleanExtra("response",false)
             if(response){
                 retrieveData()
+            }
+        }
+    }
+
+    private fun retrievePaymentInfo(){
+        val preference = Singleton.getInstance(requireContext()).preference
+        val domainName = preference.getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
+        if(domainName == null){
+            Toast.makeText(requireContext(),"No connection established. Please specify the connection in Setting.",Toast.LENGTH_LONG).show()
+        }
+        else{
+            val cookie = preference.getString(Constant.SESSION_COOKIE,null)
+            if(cookie.isNullOrEmpty()){
+                if(isAdded){
+                    expiredDialog.show()
+                }
+            }
+            else{
+                val queue = Singleton.getInstance(requireContext()).requestQueue
+                val api = "$domainName/api/getLastPayment"
+                val request = object:JsonObjectRequest(Request.Method.GET,api,null,
+                    {
+                        if(isAdded){
+                            if(!it.isNull("errorMsg")){
+                                val errorMsg = it.getString("errorMsg")
+                                Toast.makeText(requireContext(),errorMsg, Toast.LENGTH_SHORT).show()
+                            }
+                            else {
+                                if(it.isNull("result")){
+                                    binding.emptyPaymentContainer.visibility = View.VISIBLE
+                                    binding.paymentContainer.visibility = View.GONE
+                                }
+                                else{
+                                    val result = it.getJSONObject("result")
+
+                                    val paymentInfo = Payment.toObject(result)
+                                    if(paymentInfo != null){
+
+                                        binding.emptyPaymentContainer.visibility = View.GONE
+                                        binding.paymentContainer.visibility = View.VISIBLE
+
+                                        val array = arrayListOf(paymentInfo!!)
+                                        val adapter = PaymentCardListAdapter(requireContext(),array)
+                                        binding.paymentContainer.adapter = adapter
+                                    }
+                                    else{
+                                        binding.emptyPaymentContainer.visibility = View.VISIBLE
+                                        binding.paymentContainer.visibility = View.GONE
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        if (it is TimeoutError || it is NoConnectionError) {
+                            Singleton.getInstance(requireContext()).showToast("Request timed out. Please try again later.",Toast.LENGTH_LONG)
+                        } else if (it is AuthFailureError) {
+                            if(isAdded){
+                                expiredDialog.show()
+                            }
+                        } else if (it is ServerError) {
+                            Singleton.getInstance(requireContext()).showToast("Unexpected error occurred. Please try again later.",Toast.LENGTH_LONG)
+                        } else if (it is NetworkError) {
+                            Singleton.getInstance(requireContext()).showToast("Unexpected error occurred. Please try again later.",Toast.LENGTH_LONG)
+                        } else if (it is ParseError) {
+                            Singleton.getInstance(requireContext()).showToast("Received unexpected response from server. Please try again later.",Toast.LENGTH_LONG)
+                        }
+                        else{
+                            try{
+                                when (it.networkResponse.statusCode) {
+                                    HttpURLConnection.HTTP_BAD_REQUEST -> {
+                                        Singleton.getInstance(requireContext()).showToast("Unable to process your request. Please try again later.",Toast.LENGTH_LONG)
+                                        Toast.makeText(requireContext(),"",Toast.LENGTH_SHORT).show()
+                                    }
+                                    HttpURLConnection.HTTP_NOT_FOUND -> {
+                                        Singleton.getInstance(requireContext()).showToast("Unable to locate the service you request. Please try again later.",Toast.LENGTH_LONG)
+                                    }
+                                    HttpURLConnection.HTTP_INTERNAL_ERROR -> {
+                                        Singleton.getInstance(requireContext()).showToast("Unknown error occurred. Please try again later.",Toast.LENGTH_LONG)
+                                    }
+                                    HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                                        Singleton.getInstance(requireContext()).showToast("Account not found. Please try again.",Toast.LENGTH_LONG)
+                                    }
+                                }
+                            }
+                            catch(ex:Exception){
+                                Log.e(TAG,ex.stackTraceToString())
+                                Singleton.getInstance(requireContext()).showToast("Unexpected error occurred. Please try again later.",Toast.LENGTH_LONG)
+                            }
+                        }
+                    }){
+                    @Throws(AuthFailureError::class)
+                    override fun getHeaders(): Map<String, String> {
+                        val headers = HashMap<String, String>()
+                        Singleton.getInstance(requireContext()).addSessionCookie(headers)
+                        return headers
+                    }
+                }
+                queue.add(request)
             }
         }
     }
@@ -164,6 +267,7 @@ class ProfileFragment : Fragment() {
             skeletionProfilePicture!!.hide()
         }
     }
+
 
     private fun insertData(member: Member){
         showPictureLoading()

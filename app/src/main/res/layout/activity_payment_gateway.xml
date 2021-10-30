@@ -54,6 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="?attr/textAppearanceHeadline6"
+                    android:layout_marginBottom="16dp"
                     android:textAlignment="center"/>
 
                 <com.google.android.material.button.MaterialButton
@@ -61,21 +62,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
-                    android:text="Pay"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnExpire"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="8dp"
-                    android:text="Expire"/>
+                    android:text="Pay"
+                    android:tag="1"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCancel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
-                    android:text="Cancel"/>
+                    android:text="Cancel"
+                    android:tag="-1"/>
 
             </LinearLayout>
         </LinearLayout>

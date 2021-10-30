@@ -31,7 +31,6 @@ import java.text.SimpleDateFormat
 class SeatBookingActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivitySeatBookingBinding
-    private var toastBox:Toast? = null
     private val TAG = javaClass.name
 
     private var totalPrice:Double = 0.0
@@ -88,6 +87,14 @@ class SeatBookingActivity : AppCompatActivity() {
                     Singleton.getInstance(applicationContext).showToast("No Seat Selected. Minimum 1 seat is required.",Toast.LENGTH_SHORT)
                 }
             }
+
+            binding.refreshBtn.setOnRefreshListener {
+                updatePrice(totalPrice,0.0)
+                totalPrice = 0.0
+                seatSelected.clear()
+                updateSeatUI()
+                retrieveData(schedule.scheduleId)
+            }
         }
     }
 
@@ -97,6 +104,9 @@ class SeatBookingActivity : AppCompatActivity() {
 
     private fun hideLoading(){
         binding.progress.hide()
+        if(binding.refreshBtn.isRefreshing){
+            binding.refreshBtn.isRefreshing = false
+        }
     }
 
     private fun updateSeatUI(){

@@ -1,6 +1,6 @@
 package com.example.cineverseprototype.branch
 
-import com.android.tools.build.jetifier.core.utils.Log
+import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
 

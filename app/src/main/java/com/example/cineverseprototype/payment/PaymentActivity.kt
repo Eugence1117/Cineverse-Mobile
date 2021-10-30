@@ -288,10 +288,10 @@ class PaymentActivity : AppCompatActivity() {
                                     binding.scheduleTime.text = resultData.getScheduleTime()
 
                                     if(resultData.theatreType == "Beanie"){
-                                        binding.ticketLabel.text = "Beanie Ticket x${seatSelected.size}"
+                                        binding.ticketLabel.text = "Beanie Ticket x${seatSelected.size} (${String.format("RM %.2f",resultData.ticketPrice)} @each)"
                                     }
                                     else{
-                                        binding.ticketLabel.text = "Standard Ticket x${seatSelected.size}"
+                                        binding.ticketLabel.text = "Standard Ticket x${seatSelected.size} (RM ${String.format("RM %.2f",resultData.ticketPrice)} @each)"
                                     }
                                     binding.taxLabel.text = "Entertainment Tax (${Constant.TAX_PERCENTAGE * 100}%)"
                                     binding.voucherLabel.text = "Voucher Code - none"

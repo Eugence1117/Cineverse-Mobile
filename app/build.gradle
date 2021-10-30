@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.github.mreram:ticketview:1.0.0'
     implementation 'com.vipulasri:ticketview:1.1.2'
     implementation 'com.otaliastudios:zoomlayout:1.8.0'
     implementation 'info.androidhive:fontawesome:0.0.5'

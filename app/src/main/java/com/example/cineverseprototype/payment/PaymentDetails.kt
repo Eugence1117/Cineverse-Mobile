@@ -14,6 +14,7 @@ class PaymentDetails(
     val theatreType:String,
     val startTime:Date,
     val movieName:String,
+    val ticketPrice:Double,
     val totalPrice:Double,
     val tax:Double,
     val amountDiscount:Double,
@@ -35,7 +36,7 @@ class PaymentDetails(
     }
 
     fun getPriceDetails():PriceDetails{
-        return PriceDetails(totalPrice,tax,amountDiscount,discountedTotalPrice)
+        return PriceDetails(ticketPrice,totalPrice,tax,amountDiscount,discountedTotalPrice)
     }
 
     companion object{
@@ -46,12 +47,13 @@ class PaymentDetails(
                 val theatreType:String = obj.getString("theatreType")
                 val startTime:Long = obj.getLong("startTime")
                 val movieName:String = obj.getString("movieName")
+                val ticketPrice:Double = obj.getDouble("ticketPrice")
                 val totalPrice:Double = obj.getDouble("totalPrice")
                 val tax:Double = obj.getDouble("tax")
                 val amountDiscount:Double = obj.getDouble("amountDiscounted")
                 val discountedTotalPrice:Double = obj.getDouble("discountedTotalPrice")
 
-                return PaymentDetails(branchName, theatreName, theatreType, Date(startTime), movieName, totalPrice, tax, amountDiscount, discountedTotalPrice)
+                return PaymentDetails(branchName, theatreName, theatreType, Date(startTime), movieName,ticketPrice, totalPrice, tax, amountDiscount, discountedTotalPrice)
             }
             catch (ex:ParseException){
                 Log.i(javaClass.name,ex.stackTraceToString())
