@@ -108,6 +108,16 @@ class MovieScheduleWithBranchActivity : AppCompatActivity() {
         }
     }
 
+    private fun showOrHideSchedule(isShow:Boolean){
+        if(isShow){
+            binding.scheduleList.visibility = View.VISIBLE
+            binding.emptyContainer.visibility = View.GONE
+        }
+        else{
+            binding.scheduleList.visibility = View.GONE
+            binding.emptyContainer.visibility = View.VISIBLE
+        }
+    }
     private fun showLoading(){
         binding.progress.show()
     }
@@ -142,6 +152,7 @@ class MovieScheduleWithBranchActivity : AppCompatActivity() {
                         try{
                             if(it.isNull("result")){
                                 val errorMsg = it.getString("errorMsg")
+                                showOrHideSchedule(false)
                                 Toast.makeText(this,errorMsg, Toast.LENGTH_SHORT).show()
                             }
                             else{
@@ -151,77 +162,80 @@ class MovieScheduleWithBranchActivity : AppCompatActivity() {
                                 val dateList:ArrayList<Date> = ArrayList()
 
                                 if(result.length() == 0){
-                                    Toast.makeText(this,"No Schedule Available", Toast.LENGTH_SHORT).show()
+                                    showOrHideSchedule(false)
+                                    //Toast.makeText(this,"No Schedule Available", Toast.LENGTH_SHORT).show()
                                 }
+                                else{
+                                    showOrHideSchedule(true)
+                                    result.keys().forEach { key ->
+                                        val time = key.toLongOrNull()
+                                        if(time != null){
+                                            val scheduleDate = Date(time)
+                                            dateList.add(scheduleDate)
 
-                                result.keys().forEach { key ->
-                                    val time = key.toLongOrNull()
-                                    if(time != null){
-                                        val scheduleDate = Date(time)
-                                        dateList.add(scheduleDate)
+                                            val dailySchedule:MutableMap<String,ArrayList<Schedule>> = HashMap()
 
-                                        val dailySchedule:MutableMap<String,ArrayList<Schedule>> = HashMap()
+                                            val branchesSchedule = result.get(key) as JSONObject
+                                            branchesSchedule.keys().forEach { branchName ->
+                                                //Each Branch
+                                                val schedules = branchesSchedule.get(branchName) as JSONArray
 
-                                        val branchesSchedule = result.get(key) as JSONObject
-                                        branchesSchedule.keys().forEach { branchName ->
-                                            //Each Branch
-                                            val schedules = branchesSchedule.get(branchName) as JSONArray
-
-                                            for(i in 0 until schedules.length()){
-                                                val schedule = Schedule.toObject(schedules[i] as JSONObject)
-                                                if(schedule != null){
-                                                    if(dailySchedule.containsKey(branchName)){
-                                                        val list = dailySchedule[branchName]
-                                                        list!!.add(schedule)
-                                                        list.sortBy { item -> item.startTime }
-                                                    }
-                                                    else{
-                                                        val list:ArrayList<Schedule> = ArrayList()
-                                                        list.add(schedule)
-                                                        dailySchedule[branchName] = list
+                                                for(i in 0 until schedules.length()){
+                                                    val schedule = Schedule.toObject(schedules[i] as JSONObject)
+                                                    if(schedule != null){
+                                                        if(dailySchedule.containsKey(branchName)){
+                                                            val list = dailySchedule[branchName]
+                                                            list!!.add(schedule)
+                                                            list.sortBy { item -> item.startTime }
+                                                        }
+                                                        else{
+                                                            val list:ArrayList<Schedule> = ArrayList()
+                                                            list.add(schedule)
+                                                            dailySchedule[branchName] = list
+                                                        }
                                                     }
                                                 }
                                             }
+                                            //Done For one Day
+                                            scheduleList[scheduleDate] = dailySchedule
                                         }
-                                        //Done For one Day
-                                        scheduleList[scheduleDate] = dailySchedule
+                                        else{
+                                            Log.e(TAG,"$key is unparseable date")
+                                        }
                                     }
-                                    else{
-                                        Log.e(TAG,"$key is unparseable date")
-                                    }
-                                }
-                                dateList.sort()
-                                val adapter = DateRecycleAdapter(dateList,object:
-                                    DateRecycleAdapter.ClickListener{
-                                    override fun onItemClick(position: Int, v: View?) {
-                                        val dateSelected = dateList[position]
+                                    dateList.sort()
+                                    val adapter = DateRecycleAdapter(dateList,object: ClickListener{
+                                        override fun onItemClick(position: Int, v: View?) {
+                                            val dateSelected = dateList[position]
+
+                                            val branchList:MutableList<String> = ArrayList()
+                                            scheduleList[dateSelected]!!.keys.forEach {
+                                                branchList.add(it)
+                                            }
+                                            val scheduleRecycleAdapter = ScheduleWithBranchRecycleAdapter(branchList,scheduleList[dateSelected]!!,movie)
+                                            binding.scheduleList.swapAdapter(AlphaInAnimationAdapter(scheduleRecycleAdapter),false)
+                                        }
+
+                                    })
+                                    binding.dateView.adapter = adapter
+                                    //Set Default View For Schedule
+                                    if(dateList.size > 0){
+                                        val dateSelected = dateList[0]
 
                                         val branchList:MutableList<String> = ArrayList()
                                         scheduleList[dateSelected]!!.keys.forEach {
                                             branchList.add(it)
                                         }
                                         val scheduleRecycleAdapter = ScheduleWithBranchRecycleAdapter(branchList,scheduleList[dateSelected]!!,movie)
-                                        binding.scheduleList.swapAdapter(AlphaInAnimationAdapter(scheduleRecycleAdapter),false)
+
+                                        binding.scheduleList.adapter = scheduleRecycleAdapter
                                     }
-
-                                })
-                                binding.dateView.adapter = adapter
-                                //Set Default View For Schedule
-                                if(dateList.size > 0){
-                                    val dateSelected = dateList[0]
-
-                                    val branchList:MutableList<String> = ArrayList()
-                                    scheduleList[dateSelected]!!.keys.forEach {
-                                        branchList.add(it)
-                                    }
-                                    val scheduleRecycleAdapter = ScheduleWithBranchRecycleAdapter(branchList,scheduleList[dateSelected]!!,movie)
-
-                                    binding.scheduleList.adapter = scheduleRecycleAdapter
                                 }
                             }
                         }
                         catch (ex: JSONException){
                             Log.e(TAG,ex.stackTraceToString())
+                            showOrHideSchedule(false)
                             Toast.makeText(this,"Unable to process the data from server. Please try again later.",
                                 Toast.LENGTH_SHORT).show()
                         }

@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import com.example.cineverseprototype.databinding.FragmentProfileBinding
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.android.volley.*
@@ -18,10 +20,12 @@ import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.example.cineverseprototype.*
 import com.example.cineverseprototype.R
-import com.example.cineverseprototype.payment.Payment
-import com.example.cineverseprototype.payment.PaymentCardListAdapter
+import com.example.cineverseprototype.payment.*
 import com.example.cineverseprototype.picasso.CircleTransform
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.squareup.picasso.Callback
+import org.json.JSONException
+import org.w3c.dom.Text
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 
@@ -51,6 +55,12 @@ class ProfileFragment : Fragment() {
             retrieveData()
             retrievePaymentInfo()
         }
+
+        binding.viewTransactionChip.setOnClickListener {
+            val intent = Intent(requireContext(),PaymentHistory::class.java)
+            startActivity(intent)
+        }
+
         retrieveData()
         retrievePaymentInfo()
         return binding.root
@@ -66,6 +76,17 @@ class ProfileFragment : Fragment() {
             if(response){
                 retrieveData()
             }
+        }
+    }
+
+    private fun showOrHidePayment(isShow:Boolean){
+        if(isShow){
+            binding.emptyPaymentContainer.visibility = View.GONE
+            binding.paymentContainer.visibility = View.VISIBLE
+        }
+        else{
+            binding.emptyPaymentContainer.visibility = View.VISIBLE
+            binding.paymentContainer.visibility = View.GONE
         }
     }
 
@@ -87,35 +108,65 @@ class ProfileFragment : Fragment() {
                 val api = "$domainName/api/getLastPayment"
                 val request = object:JsonObjectRequest(Request.Method.GET,api,null,
                     {
-                        if(isAdded){
-                            if(!it.isNull("errorMsg")){
-                                val errorMsg = it.getString("errorMsg")
-                                Toast.makeText(requireContext(),errorMsg, Toast.LENGTH_SHORT).show()
-                            }
-                            else {
-                                if(it.isNull("result")){
-                                    binding.emptyPaymentContainer.visibility = View.VISIBLE
-                                    binding.paymentContainer.visibility = View.GONE
+                        try{
+                            if(isAdded){
+                                if(!it.isNull("errorMsg")){
+                                    val errorMsg = it.getString("errorMsg")
+                                    showOrHidePayment(false)
+                                    Toast.makeText(requireContext(),errorMsg, Toast.LENGTH_SHORT).show()
                                 }
-                                else{
-                                    val result = it.getJSONObject("result")
-
-                                    val paymentInfo = Payment.toObject(result)
-                                    if(paymentInfo != null){
-
-                                        binding.emptyPaymentContainer.visibility = View.GONE
-                                        binding.paymentContainer.visibility = View.VISIBLE
-
-                                        val array = arrayListOf(paymentInfo!!)
-                                        val adapter = PaymentCardListAdapter(requireContext(),array)
-                                        binding.paymentContainer.adapter = adapter
+                                else {
+                                    if(it.isNull("result")){
+                                        showOrHidePayment(false)
                                     }
                                     else{
-                                        binding.emptyPaymentContainer.visibility = View.VISIBLE
-                                        binding.paymentContainer.visibility = View.GONE
+                                        val result = it.getJSONObject("result")
+
+                                        val paymentInfo = Payment.toObject(result)
+                                        if(paymentInfo != null){
+                                            val array = arrayListOf(paymentInfo!!)
+                                            val adapter = PaymentCardRecyclerAdapter(array,object :ClickListener{
+                                                override fun onItemClick(position: Int, v: View?) {
+                                                    val payment = array[position]
+
+                                                    if(payment.paymentStatus == "Pending"){
+                                                        val bottomSheetDialog = BottomSheetDialog(requireContext());
+                                                        bottomSheetDialog.setContentView(R.layout.bottom_sheet_layout)
+                                                        bottomSheetDialog.findViewById<LinearLayout>(R.id.viewTransaction)?.setOnClickListener {
+                                                            val intent = Intent(requireContext(),ViewPaymentActivity::class.java)
+                                                            intent.putExtra("payment",payment)
+                                                            startActivity(intent)
+                                                        }
+                                                        bottomSheetDialog.findViewById<LinearLayout>(R.id.proceedPayment)?.setOnClickListener {
+                                                            val intent = Intent(requireContext(),PaymentGateway::class.java)
+                                                            //intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                                            intent.putExtra("transactionId",payment.paymentId)
+                                                            startActivity(intent)
+                                                        }
+                                                        bottomSheetDialog.show()
+                                                    }
+                                                    else{
+                                                        val intent = Intent(requireContext(),ViewPaymentActivity::class.java)
+                                                        intent.putExtra("payment",payment)
+                                                        startActivity(intent)
+                                                    }
+                                                }
+
+                                            })
+                                            binding.paymentContainer.adapter = adapter
+                                            showOrHidePayment(true)
+                                        }
+                                        else{
+                                            showOrHidePayment(false)
+                                        }
                                     }
                                 }
                             }
+                        }
+                        catch(ex: JSONException){
+                            Log.e(TAG,ex.stackTraceToString())
+                            showOrHidePayment(false)
+                            Singleton.getInstance(requireContext()).showToast("Unable to process the data from server. Please try again later.",Toast.LENGTH_LONG)
                         }
                     },
                     {

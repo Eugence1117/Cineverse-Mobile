@@ -129,8 +129,9 @@ class PaymentGateway : AppCompatActivity() {
                                 val result = response.getString("result")
 
                                 val successDialog = AlertDialog.Builder(this)
-                                successDialog.setTitle("Payment Success")
-                                successDialog.setMessage("The payment has been completed. You may view your ticket on home page.")
+                                successDialog.setTitle("Action Success")
+                                val msg = if(statusCode == Constant.PAYMENT_PAID_STATUS_CODE) "The payment has been completed. You may view your ticket on home page." else "The payment has been cancelled."
+                                successDialog.setMessage(msg)
                                 successDialog.setPositiveButton("Exit"){ dialog, _ ->
                                     dialog.dismiss()
                                 }

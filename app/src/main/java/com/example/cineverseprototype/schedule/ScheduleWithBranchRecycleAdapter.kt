@@ -4,13 +4,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cineverseprototype.ExpandCollapseAnimation
 import com.example.cineverseprototype.R
 import com.example.cineverseprototype.movie.Movie
-import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class ScheduleWithBranchRecycleAdapter(val branchList:MutableList<String>, val scheduleList:Map<String,ArrayList<Schedule>>, val movie: Movie): RecyclerView.Adapter<ScheduleWithBranchRecycleAdapter.ScheduleViewHolder>() {
@@ -31,13 +32,17 @@ class ScheduleWithBranchRecycleAdapter(val branchList:MutableList<String>, val s
             val recyclerView = holder.itemView.findViewById<RecyclerView>(R.id.scheduleList)
             recyclerView.adapter = adapter
 
-            holder.itemView.setOnClickListener {
+
+            holder.itemView.findViewById<ConstraintLayout>(R.id.headerLayout).setOnClickListener {
                 if(recyclerView.visibility == View.VISIBLE){
+                    holder.itemView.findViewById<ImageView>(R.id.icon).setImageResource(R.drawable.baseline_keyboard_arrow_down_grey_400_24dp)
                     recyclerView.visibility = View.GONE
                 }
                 else{
                     recyclerView.visibility = View.VISIBLE
+                    holder.itemView.findViewById<ImageView>(R.id.icon).setImageResource(R.drawable.baseline_keyboard_arrow_up_grey_400_24dp)
                 }
+
             }
         }
     }

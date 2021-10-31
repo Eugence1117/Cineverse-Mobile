@@ -3,6 +3,7 @@ package com.example.cineverseprototype.payment
 import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -14,7 +15,7 @@ class Payment(
     val voucherId:String,
     val createDate: Date,
     val lastUpdate:Date,
-    val paidOn:Date,
+    val paidOn:Date?,
     val movieName:String,
     val scheduleStartTime:Date,
     val branchName:String,
@@ -22,14 +23,26 @@ class Payment(
     val theatreType:String,
     val seatList:String
 
-) {
+) :Serializable {
 
+    fun getLatestDate():String{
+        val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+        return format.format(lastUpdate)
+    }
     fun getBranchInfo():String{
         return "$branchName - Hall $theatreName"
     }
 
+    fun showMethod():Boolean{
+        return when(paymentStatus){
+            "Pending","Cancelled","Refunded","Pending Refund" -> {false}
+            "Paid","Completed" -> {true}
+            else -> { false}
+        }
+    }
+
     fun getSeatInfo():String{
-        return "$theatreType Seat - $seatList"
+        return "${if(theatreType == "Beanie") "Beanie" else "Standard"} Seat - $seatList"
     }
 
     fun getScheduleDate():String{
@@ -54,6 +67,18 @@ class Payment(
         }
     }
 
+    fun getDateLabel():String{
+        return when(paymentStatus){
+            "Pending" -> {"Created On"}
+            "Paid" -> {"Paid On"}
+            "Completed" -> {"Completed On"}
+            "Pending Refund" -> {"Requested On"}
+            "Refunded" -> {"Refunded On"}
+            "Cancelled" -> {"Cancelled On"}
+            else -> { "Created On"}
+        }
+    }
+
     companion object{
         fun toObject(obj: JSONObject): Payment? {
             try{
@@ -64,7 +89,7 @@ class Payment(
                 val voucherId:String = obj.getString("voucherId")
                 val createDate:Long = obj.getLong("createDate")
                 val lastUpdate:Long = obj.getLong("lastUpdate")
-                val paidOn:Long = obj.getLong("paidOn")
+                val paidOn:Long? = if(obj.isNull("paidOn")) null else obj.getLong("paidOn")
                 val movieName:String = obj.getString("movieName")
                 val scheduleStartTime:Long = obj.getLong("scheduleStartTime")
                 val branchName:String = obj.getString("branchName")
@@ -72,7 +97,7 @@ class Payment(
                 val theatreType:String = obj.getString("theatreType")
                 val seatList:String = obj.getString("seatList")
 
-                return Payment(paymentId, paymentStatus, paymentType, totalPrice, voucherId, Date(createDate), Date(lastUpdate), Date(paidOn), movieName, Date(scheduleStartTime), branchName, theatreName, theatreType, seatList)
+                return Payment(paymentId, paymentStatus, paymentType, totalPrice, voucherId, Date(createDate), Date(lastUpdate), if(paidOn == null ) null else Date(paidOn), movieName, Date(scheduleStartTime), branchName, theatreName, theatreType, seatList)
             }
             catch(ex: JSONException){
                 Log.e("Payment",ex.stackTraceToString())

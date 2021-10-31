@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -67,6 +68,16 @@ class MoviesFromBranchActivity : AppCompatActivity() {
         }
     }
 
+    private fun showMovieView(){
+        binding.emptyContainer.visibility = View.GONE
+        binding.movieList.visibility = View.VISIBLE
+    }
+
+    private fun hideMovieView(){
+        binding.emptyContainer.visibility = View.VISIBLE
+        binding.movieList.visibility = View.GONE
+    }
+
     private fun showLoading(){
         val adapter = RecycleViewSkeleton()
         skeletonScreen = Skeleton.bind(binding.movieList).adapter(adapter).load(R.layout.movie_skeleton).count(10).show()
@@ -108,6 +119,7 @@ class MoviesFromBranchActivity : AppCompatActivity() {
                         hideLoading()
                         try{
                             if(it.isNull("result")){
+                                hideMovieView()
                                 val errorMsg = it.getString("errorMsg")
                                 Toast.makeText(this,errorMsg, Toast.LENGTH_SHORT).show()
                             }
@@ -115,25 +127,30 @@ class MoviesFromBranchActivity : AppCompatActivity() {
                                 val result = it.get("result") as JSONArray
                                 val movieList:ArrayList<Movie> = ArrayList<Movie>()
                                 if(result.length() == 0){
-                                    Toast.makeText(this,"No movie Available",Toast.LENGTH_SHORT).show()
+                                    hideMovieView()
+                                    //Toast.makeText(this,"No movie Available",Toast.LENGTH_SHORT).show()
                                 }
-                                for(i in 0 until result.length()){
-                                    val movie = Movie.toObject(result.get(i) as JSONObject)
-                                    if(movie != null){
-                                        movieList.add(movie)
+                                else{
+                                    showMovieView()
+                                    for(i in 0 until result.length()){
+                                        val movie = Movie.toObject(result.get(i) as JSONObject)
+                                        if(movie != null){
+                                            movieList.add(movie)
+                                        }
+                                        else{
+                                            Toast.makeText(this,"Unable to retrieve complete data from server.", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
-                                    else{
-                                        Toast.makeText(this,"Unable to retrieve complete data from server.", Toast.LENGTH_SHORT).show()
-                                    }
+
+                                    val adapter = MovieRecycleAdapter(movieList,branchId)
+                                    binding.movieList.adapter = adapter
+
                                 }
-
-                                val adapter = MovieRecycleAdapter(movieList,branchId)
-                                binding.movieList.adapter = adapter
-
                             }
                         }
                         catch (ex: JSONException){
                             Log.e(TAG,ex.stackTraceToString())
+                            hideMovieView()
                             Toast.makeText(this,"Unable to process the data from server. Please try again later.",
                                 Toast.LENGTH_SHORT).show()
                         }

@@ -2,6 +2,7 @@ package com.example.cineverseprototype
 
 import android.R.attr.start
 import android.R.attr.tag
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -25,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val TAG = javaClass.name
+    private lateinit var exitDialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,20 @@ class LoginActivity : AppCompatActivity() {
             binding.passwordInput.setText(password)
         }
         binding.rememberChkbox.isChecked = isRemember
+
+
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setMessage("Are you sure to exit ?")
+        dialogBuilder.setTitle("Exit")
+        dialogBuilder.setPositiveButton("Yes") { dialog, _ ->
+            dialog.dismiss()
+            finishAffinity()
+        }
+        dialogBuilder.setNegativeButton("Cancel"){
+                dialog,_ -> dialog.dismiss()
+        }
+
+        exitDialog = dialogBuilder.create()
 
         binding.loginBtn.setOnClickListener {
             if(validateInput()){
@@ -107,6 +123,11 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this@LoginActivity,RegistrationActivity::class.java)
             startActivity(intent)
         }
+    }
+
+
+    override fun onBackPressed() {
+        exitDialog.show()
     }
 
     private fun startLoading(){

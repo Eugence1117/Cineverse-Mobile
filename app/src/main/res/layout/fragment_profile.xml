@@ -143,7 +143,6 @@
                             android:id="@+id/viewTransactionChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="bottom"
                             android:text="View All"
                             app:chipIconSize="12dp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -172,7 +171,7 @@
                                 app:srcCompat="@drawable/outline_receipt_grey_400_18dp" />
 
                             <TextView
-                                android:id="@+id/textView6"
+                                android:id="@+id/emptyTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="No purchase made yet"
@@ -181,8 +180,9 @@
 
                         </LinearLayout>
 
-                        <ListView
+                        <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/paymentContainer"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:layout_constraintTop_toTopOf="parent"

@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:enabled="true"
-        android:id="@+id/aboutUsButton"
-        android:title="@string/aboutusLabel"
-        android:icon="@drawable/round_info_24dp" />
-    <item android:enabled="true"
-        android:id="@+id/helpButton"
-        android:title="@string/helpLabel"
-        android:icon="@drawable/round_help_24dp"/>
+        android:id="@+id/scanButton"
+        android:title="Scan QR Code"
+        android:icon="@drawable/baseline_qr_code_scanner_black_24dp"/>
     <item android:enabled="true"
         android:id="@+id/settingButton"
         android:title="Settings"

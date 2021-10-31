@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.IdRes
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -21,11 +22,13 @@ import com.example.cineverseprototype.databinding.ActivityMainBinding
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.util.HashMap
+import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivityMainBinding
     private val TAG = javaClass.name
+    private lateinit var exitDialog:AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,25 +46,37 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this, SettingsActivity::class.java)
                     startActivity(intent)
                 }
-                R.id.aboutUsButton -> {
-                    Toast.makeText(this,"Function pending",Toast.LENGTH_SHORT).show()
-                }
-                R.id.helpButton -> {
-                    Toast.makeText(this,"Function pending",Toast.LENGTH_SHORT).show()
+                R.id.scanButton -> {
+                    val intent = Intent(this,QrCodeScannerActivity::class.java)
+                    startActivity(intent)
                 }
                 R.id.logoutButton -> {
-                    logout()
+                    logout(true)
                 }
             }
             true
         }
+
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setMessage("Are you sure to exit ?")
+        dialogBuilder.setTitle("Exit")
+        dialogBuilder.setPositiveButton("Yes") { dialog, _ ->
+            dialog.dismiss()
+            logout(false)
+            finishAffinity()
+        }
+        dialogBuilder.setNegativeButton("Cancel"){
+            dialog,_ -> dialog.dismiss()
+        }
+
+        exitDialog = dialogBuilder.create()
 
         val navController = (supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment).navController
         binding.botNavigationView.setupWithNavController(navController)
         
     }
 
-    private fun logout(){
+    private fun logout(returnLogin:Boolean){
         val expiredDialog = Util.createSessionExpiredDialog(this)
         val preference = Singleton.getInstance(this).preference
         val domain = preference.getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
@@ -86,8 +101,10 @@ class MainActivity : AppCompatActivity() {
                         editor.remove(Constant.SESSION_COOKIE)
                         editor.commit()
 
-                        startActivity(intent)
-                        finish()
+                        if(returnLogin){
+                            startActivity(intent)
+                            finish()
+                        }
                     },
                     { error ->
                         if (error is TimeoutError || error is NoConnectionError) {
@@ -131,4 +148,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        exitDialog.show()
+    }
 }

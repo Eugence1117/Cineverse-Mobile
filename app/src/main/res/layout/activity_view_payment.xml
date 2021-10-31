@@ -6,30 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".payment.PaymentActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@drawable/baseline_close_white_24dp"
-            app:title="@string/paymentText"
-            android:textAlignment="center"
-            app:titleTextColor="@color/secondaryTextColor"
-            app:subtitleTextColor="@color/secondaryTextColor">
-
-        </com.google.android.material.appbar.MaterialToolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:orientation="vertical">
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progress"
@@ -195,11 +176,133 @@
                                 android:orientation="horizontal"
                                 android:weightSum="1">
 
-                                <TextView
-                                    android:id="@+id/ticketLabel"
+                                <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:text="Ticket Price"
+                                    android:layout_weight="1.0">
+
+                                    <TextView
+                                        android:id="@+id/transactionIdLabel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Reference ID"
+                                        android:textStyle="bold"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageButton
+                                        android:id="@+id/copyIdBtn"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="?attr/selectableItemBackground"
+                                        android:layout_marginStart="10dp"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:src="@drawable/baseline_content_copy_grey_400_24dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/transactionIdLabel"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:id="@+id/statusLabel"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/statusLabel"
+                                    android:layout_weight="0.5"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/statusValue"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.5"
+                                    android:text="None"
+                                    android:textAlignment="viewEnd"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:id="@+id/dateLabel"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Created On"
+                                    android:layout_weight="0.5"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/dateValue"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.5"
+                                    android:text="None"
+                                    android:textAlignment="viewEnd"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/payMethodContainer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:id="@+id/paidMethodLabel"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Pay Method"
+                                    android:layout_weight="0.5"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/paidMethod"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.5"
+                                    android:text="None"
+                                    android:textAlignment="viewEnd"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:layout_marginVertical="2dp"
+                                android:background="@color/grayColor" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:orientation="horizontal"
+                                android:weightSum="1">
+
+                                <TextView
+                                    android:id="@+id/amountLabel"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Amount Paid"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/primaryTextColor"
                                     android:layout_weight="0.7"
                                     android:textStyle="bold" />
 
@@ -208,264 +311,54 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="0.3"
+                                    android:textColor="@color/primaryTextColor"
                                     android:text="RM 0.00"
                                     android:textAlignment="viewEnd"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginVertical="4dp"
-                                android:orientation="horizontal"
-                                android:weightSum="1">
-
-                                <TextView
-                                    android:id="@+id/taxLabel"
-                                    android:layout_width="0dp"
-                                    android:text="Tax"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.7" />
-
-                                <TextView
-                                    android:id="@+id/taxPrice"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.3"
-                                    android:text="RM 0.00"
-                                    android:textAlignment="viewEnd"
-                                    android:textColor="@color/dangerColor" />
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.5dp"
-                                android:layout_marginVertical="2dp"
-                                android:background="@color/grayColor" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginVertical="4dp"
-                                android:orientation="horizontal"
-                                android:weightSum="1">
-
-                                <TextView
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.7"
-                                    android:text="Subtotal"
-                                    android:textAllCaps="true"
-                                    android:textColor="@color/primaryTextColor"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/subTotal"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.3"
-                                    android:text="RM 0.00"
-                                    android:textAlignment="viewEnd"
-                                    android:textAllCaps="true"
-                                    android:textColor="@color/primaryTextColor"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginVertical="4dp"
-                                android:orientation="horizontal"
-                                android:weightSum="1">
-
-                                <TextView
-                                    android:id="@+id/voucherLabel"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.7"
-                                    android:text="Voucher Discount - none" />
-
-                                <TextView
-                                    android:id="@+id/discountAmount"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.3"
-                                    android:text="- RM 0.00"
-                                    android:textAlignment="viewEnd"
-                                    android:textColor="@color/successColor" />
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.5dp"
-                                android:layout_marginVertical="2dp"
-                                android:background="@color/grayColor" />
-
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginVertical="4dp"
-                                android:orientation="horizontal"
-                                android:paddingVertical="2dp"
-                                android:weightSum="1">
-
-                                <TextView
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.7"
-                                    android:text="GRAND TOTAL"
-                                    android:textAllCaps="true"
-                                    android:textColor="@color/primaryTextColor"
-                                    android:textSize="18sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/grandTotal"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.3"
-                                    android:text="RM 0.00"
-                                    android:textAlignment="viewEnd"
-                                    android:textColor="@color/primaryTextColor"
-                                    android:textSize="18sp"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
                         </LinearLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/voucherCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:contentPadding="8dp">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/voucherLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:id="@+id/voucherTitle"
-                            style="?attr/textAppearanceHeadline6"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableLeft="@drawable/baseline_confirmation_number_blue_24dp"
-                            android:drawablePadding="5dp"
-                            android:text="Voucher"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/voucherContainer"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/voucherTitle">
-
-                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                                android:id="@+id/voucherCode"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:hint="@string/voucherLabel"
-                                android:inputType="textNoSuggestions"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/applyBtn"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <Button
-                                android:id="@+id/applyBtn"
-                                android:layout_width="100dp"
-                                android:layout_height="40dp"
-                                android:text="APPLY"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <TextView
-                            android:id="@+id/voucherMsg"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="15dp"
-                            android:text="@string/savingMsg"
-                            android:textSize="11sp"
-                            android:textStyle="italic"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/voucherContainer" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/paymentMethodCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:contentPadding="8dp">
-
-                    <LinearLayout
-                        android:id="@+id/paymentMethodLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="?attr/textAppearanceHeadline6"
-                            android:drawableLeft="@drawable/baseline_paid_blue_24dp"
-                            android:drawablePadding="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Payment Method" />
-
-                        <RadioGroup
-                            android:id="@+id/paymentMethod"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <RadioButton
-                                android:id="@+id/internetBanking"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Internet Banking" />
-
-                            <RadioButton
-                                android:id="@+id/cardPayment"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Debit/Credit Card" />
-                        </RadioGroup>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-
-                <FrameLayout
+                    android:id="@+id/barcodeCard"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginVertical="10dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/voucherCard">
+                    android:layout_marginTop="20dp"
+                    app:contentPadding="8dp">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/confirm_button"
+                    <ImageView
+                        android:id="@+id/qrCode"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:text="@string/confirmPaymentLabel" />
+                        android:layout_height="match_parent"/>
 
-                </FrameLayout>
+                    <RelativeLayout
+                        android:id="@+id/emptyContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/outline_report_grey_400_36dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:gravity="center"
+                                android:layout_gravity="center"
+                                android:text="QR Code will only generated once the payment is settled."/>
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

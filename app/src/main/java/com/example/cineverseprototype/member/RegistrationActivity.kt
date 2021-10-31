@@ -48,6 +48,7 @@ class RegistrationActivity : AppCompatActivity() {
     private var imageUri : Intent? = null
     private var queueRequest: RequestQueue? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegistrationBinding.inflate(layoutInflater)

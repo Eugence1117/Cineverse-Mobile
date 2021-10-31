@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cineverseprototype.ClickListener
 import com.example.cineverseprototype.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,7 +44,7 @@ class DateRecycleAdapter(private val dateList:ArrayList<Date>, private val liste
         }
     }
 
-    fun styleCheckItem(){
+    private fun styleCheckItem(){
         if(checkedView != null){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 checkedView!!.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(checkedView!!.context,R.color.secondaryColor))
@@ -52,7 +53,7 @@ class DateRecycleAdapter(private val dateList:ArrayList<Date>, private val liste
         }
     }
 
-    fun styleUncheckItem(){
+    private fun styleUncheckItem(){
         if(checkedView != null){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 checkedView!!.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(checkedView!!.context,R.color.primaryDarkColor))
@@ -66,9 +67,5 @@ class DateRecycleAdapter(private val dateList:ArrayList<Date>, private val liste
     }
 
     class ScheduleViewHolder(view: View):RecyclerView.ViewHolder(view){
-    }
-
-    interface ClickListener {
-        fun onItemClick(position: Int, v: View?)
     }
 }

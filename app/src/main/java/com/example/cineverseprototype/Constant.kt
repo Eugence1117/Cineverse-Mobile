@@ -3,6 +3,8 @@ package com.example.cineverseprototype
 class Constant {
     companion object{
         const val WEB_SERVICE_DOMAIN_NAME:String = "domainName"
+        const val APPLICATION_PREFERENCES:String = "cineverse_app_pref"
+        const val CAMERA_PERMISSION:String = "cineverse_camera_permission"
 
         const val REMEMBER_OPTION = "rememberCredential"
         const val PASSWORD_KEY = "userPassword"

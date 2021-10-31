@@ -177,21 +177,24 @@ class SeatBookingActivity : AppCompatActivity() {
                                                     else{
                                                         val previousPrice = totalPrice
                                                         totalPrice += seat.seatPrice
-                                                        updatePrice(previousPrice,totalPrice)
                                                         seatSelected.add(seat.seatNum)
                                                         if(!seat.reference.isNullOrEmpty()){
                                                             seatSelected.add(seat.reference)
+                                                            totalPrice += seat.seatPrice
                                                         }
+                                                        updatePrice(previousPrice,totalPrice)
                                                     }
                                                 }
                                                 else{
                                                     val previousPrice = totalPrice
                                                     totalPrice -= seat.seatPrice
-                                                    updatePrice(previousPrice,totalPrice)
                                                     seatSelected.remove(seat.seatNum)
                                                     if(!seat.reference.isNullOrEmpty()){
                                                         seatSelected.remove(seat.reference)
+                                                        totalPrice -= seat.seatPrice
+
                                                     }
+                                                    updatePrice(previousPrice,totalPrice)
                                                 }
                                                 updateSeatUI()
                                             }

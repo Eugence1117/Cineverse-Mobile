@@ -84,4 +84,9 @@
     <string name="confirmPaymentLabel">Confirm Payment</string>
     <string name="savingMsg">You has been saved RM %.2f from this order.</string>
     <string name="voucherLabel">Voucher Code</string>
+    <string name="emptyPaymentMsg">No payment has been made before.</string>
+    <string name="statusLabel">Status</string>
+    <string name="emptyTicketMsg">No schedule ahead. Feel free to book more ticket.</string>
+    <string name="emptyScheduleMsg">No Schedule Available</string>
+    <string name="emptyMovieMsg">No movie available. Please visit another branch to look for some movie.</string>
 </resources>
