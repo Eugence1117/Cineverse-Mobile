@@ -34,6 +34,8 @@ class PaymentActivity : AppCompatActivity() {
     private val voucherList:MutableList<Voucher> = ArrayList<Voucher>()
     private var priceDetails:PriceDetails? = null
 
+    private var voucherCode:String? = null
+
     private lateinit var applyListener:View.OnClickListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +100,27 @@ class PaymentActivity : AppCompatActivity() {
 
                 if(paymentMethod != null){
                     val voucherId = binding.voucherCode.text.toString()
-                    proceedPayment(scheduleId,seatSelected,paymentMethod,voucherId)
+
+                    if(voucherCode == null && !voucherId.isNullOrEmpty()){
+                        val alertDialog = AlertDialog.Builder(this)
+                        alertDialog.setTitle("Voucher Not Applied")
+                        alertDialog.setMessage("Your voucher has not apply yet. Do you want to apply it?")
+                        alertDialog.setPositiveButton("Yes"){
+                                dialog,_ ->
+                            dialog.dismiss()
+                            binding.applyBtn.performClick()
+                        }
+                        alertDialog.setNegativeButton("No") {
+                                dialog,_ ->
+                            dialog.dismiss()
+                            binding.voucherCode.text.clear()
+                            proceedPayment(scheduleId,seatSelected,paymentMethod,voucherCode)
+                        }
+                        alertDialog.show()
+                    }
+                    else{
+                        proceedPayment(scheduleId,seatSelected,paymentMethod,voucherCode)
+                    }
                 }
             }
         }
@@ -381,7 +403,7 @@ class PaymentActivity : AppCompatActivity() {
         }
     }
 
-    private fun proceedPayment(scheduleId:String,seatSelected:ArrayList<String>,paymentType:Int,voucherId:String){
+    private fun proceedPayment(scheduleId:String,seatSelected:ArrayList<String>,paymentType:Int,voucherId:String?){
         val preference = Singleton.getInstance(this).preference
         val expiredDialog = Util.createSessionExpiredDialog(this)
         val domain = preference.getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
@@ -538,7 +560,7 @@ class PaymentActivity : AppCompatActivity() {
 
                                         if(priceDetails != null){
                                             binding.voucherLabel.text = "Voucher Code - ${binding.voucherCode.text}"
-
+                                            voucherCode = binding.voucherCode.text.toString()
                                             binding.ticketPrice.text = String.format("RM %.2f",priceDetails!!.totalPrice)
                                             binding.taxPrice.text = String.format("RM %.2f",priceDetails!!.tax)
                                             binding.subTotal.text = String.format("RM %.2f",(priceDetails!!.totalPrice+priceDetails!!.tax))
@@ -555,6 +577,7 @@ class PaymentActivity : AppCompatActivity() {
                                             binding.applyBtn.text = "Cancel"
                                             binding.applyBtn.setOnClickListener { view ->
                                                 binding.applyBtn.text = "Apply"
+                                                voucherCode = null
                                                 binding.voucherCode.isEnabled = true
                                                 binding.voucherCode.text.clear()
 
