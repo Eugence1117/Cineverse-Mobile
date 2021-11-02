@@ -430,6 +430,7 @@ class PaymentActivity : AppCompatActivity() {
                 val queue = Singleton.getInstance(this).requestQueue
 
                 val api = "$domain/api/processPayment"
+                val retryPolicy = DefaultRetryPolicy(0, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
 
                 val request = object: StringRequest(Request.Method.POST,api,
                     {
@@ -518,6 +519,7 @@ class PaymentActivity : AppCompatActivity() {
                         return headers
                     }
                 }
+                request.retryPolicy = retryPolicy
                 queue.add(request)
             }
         }
