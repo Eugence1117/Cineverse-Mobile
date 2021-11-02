@@ -68,7 +68,7 @@ class QrCodeScannerActivity : AppCompatActivity() {
         sheetBehavior = BottomSheetBehavior.from(binding.contentLayout)
         sheetBehavior.isFitToContents = true
         sheetBehavior.isHideable = false//prevents the boottom sheet from completely hiding off the screen
-        sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED//initially state to fully expanded
+        sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED//initially state to fully expanded
 
         binding.infoBtn.setOnClickListener {
             if(sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED){

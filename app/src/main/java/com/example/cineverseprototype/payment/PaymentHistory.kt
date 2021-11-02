@@ -33,7 +33,6 @@ class PaymentHistory : AppCompatActivity() {
 
         supportActionBar?.title = "Payment History"
         binding.progress.hide()
-        hideList()
 
         binding.refreshBtn.setOnRefreshListener {
             retrieveData()
