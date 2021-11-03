@@ -17,14 +17,20 @@ import com.example.cineverseprototype.Singleton
 import com.example.cineverseprototype.Util
 import com.example.cineverseprototype.databinding.ActivityPaymentHistoryBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.HttpURLConnection
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PaymentHistory : AppCompatActivity() {
 
     private lateinit var binding:ActivityPaymentHistoryBinding
     private val TAG = javaClass.name
+    private var isAscending = false
+    private var selectedOrderMode = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +44,86 @@ class PaymentHistory : AppCompatActivity() {
             retrieveData()
         }
 
+        val builder = MaterialAlertDialogBuilder(this)
+        builder.setTitle("Order By:")
+        builder.setItems(R.array.sort_entries){
+            _,item ->
+            selectedOrderMode = item
+            sortItem(item)
+        }
+
+        val orderDialog = builder.create()
+        binding.orderButton.setOnClickListener {
+            orderDialog.show()
+        }
+        binding.sequenceBtn.setOnClickListener {
+            if(isAscending){
+                binding.sequenceBtn.setImageResource(R.drawable.baseline_arrow_upward_grey_400_24dp)
+            }
+            else{
+                binding.sequenceBtn.setImageResource(R.drawable.baseline_arrow_downward_grey_400_24dp)
+            }
+            isAscending = !isAscending
+            sortItem(selectedOrderMode)
+        }
         retrieveData()
+    }
+
+    private fun sortItem(item:Int) {
+        when(item) {
+            0 -> {
+                val adapter = binding.cardList.adapter
+                if (adapter != null && adapter is PaymentCardRecyclerAdapter) {
+                    adapter.paymentList.sortWith(Comparator { p1, p2 ->
+                        if (isAscending) {
+                            p1.movieName.compareTo(p2.movieName)
+                        } else {
+                            p2.movieName.compareTo(p1.movieName)
+                        }
+                    })
+                    adapter.notifyDataSetChanged()
+                }
+            }
+            1 -> {
+                val adapter = binding.cardList.adapter
+                if (adapter != null && adapter is PaymentCardRecyclerAdapter) {
+                    adapter.paymentList.sortWith(Comparator { p1, p2 ->
+                        if (isAscending) {
+                            p1.lastUpdate.compareTo(p2.lastUpdate)
+                        } else {
+                            p2.lastUpdate.compareTo(p1.lastUpdate)
+                        }
+                    })
+                    adapter.notifyDataSetChanged()
+                }
+            }
+            2 -> {
+                val adapter = binding.cardList.adapter
+                if (adapter != null && adapter is PaymentCardRecyclerAdapter) {
+                    adapter.paymentList.sortWith(Comparator { p1, p2 ->
+                        if (isAscending) {
+                            p1.scheduleStartTime.compareTo(p2.scheduleStartTime)
+                        } else {
+                            p2.scheduleStartTime.compareTo(p1.scheduleStartTime)
+                        }
+                    })
+                    adapter.notifyDataSetChanged()
+                }
+            }
+            3 -> {
+                val adapter = binding.cardList.adapter
+                if (adapter != null && adapter is PaymentCardRecyclerAdapter) {
+                    adapter.paymentList.sortWith(Comparator { p1, p2 ->
+                        if (isAscending) {
+                            p1.paymentStatus.compareTo(p2.paymentStatus)
+                        } else {
+                            p2.paymentStatus.compareTo(p1.paymentStatus)
+                        }
+                    })
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
     }
 
     private fun hideLoading(){
@@ -138,6 +223,7 @@ class PaymentHistory : AppCompatActivity() {
 
                                         })
                                         binding.cardList.adapter = adapter
+                                        sortItem(selectedOrderMode)
                                     }
                                     else{
                                         hideList()

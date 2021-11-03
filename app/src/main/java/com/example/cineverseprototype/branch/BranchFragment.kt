@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import com.android.volley.*
 import com.android.volley.toolbox.JsonObjectRequest
@@ -46,7 +47,10 @@ class BranchFragment : Fragment() {
         binding.refreshBtn.setOnRefreshListener {
             getData()
         }
-        getData()
+
+        if(isAdded){
+            getData()
+        }
         return binding.root
     }
 
@@ -123,6 +127,20 @@ class BranchFragment : Fragment() {
                                     }
                                     val adapter = ExpandableListAdapter(requireContext(),title,items)
                                     binding.expandList.setAdapter(adapter)
+                                    adapter.filter.filter("")
+
+                                    binding.searchView.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener {
+                                        override fun onQueryTextSubmit(query: String?): Boolean {
+                                            //Do Nothing
+                                            return true
+                                        }
+
+                                        override fun onQueryTextChange(newText: String?): Boolean {
+                                            adapter.filter.filter(newText)
+                                            return true
+                                        }
+
+                                    })
                                     binding.expandList.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
                                         val item = items[title.get(groupPosition)]!![childPosition]
 

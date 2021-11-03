@@ -61,8 +61,10 @@ class ProfileFragment : Fragment() {
             startActivity(intent)
         }
 
-        retrieveData()
-        retrievePaymentInfo()
+        if(isAdded){
+            retrieveData()
+            retrievePaymentInfo()
+        }
         return binding.root
     }
 

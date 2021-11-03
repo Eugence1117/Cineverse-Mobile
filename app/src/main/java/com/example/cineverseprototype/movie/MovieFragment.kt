@@ -47,9 +47,11 @@ class MovieFragment : Fragment() {
         binding = FragmentMovieBinding.inflate(inflater,container,false)
 
         // Inflate the layout for requireContext() fragment
-        binding.movieList.setHasFixedSize(true)
-        getMovieData()
-        getAnnouncementData()
+        if(isAdded){
+            binding.movieList.setHasFixedSize(true)
+            getMovieData()
+            getAnnouncementData()
+        }
         return binding.root
     }
 

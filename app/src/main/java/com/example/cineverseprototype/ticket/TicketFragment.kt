@@ -51,7 +51,10 @@ class TicketFragment : Fragment() {
         binding.refreshBtn.setOnRefreshListener {
             retrievePaymentInfo()
         }
-        retrievePaymentInfo()
+
+        if(isAdded){
+            retrievePaymentInfo()
+        }
 
         return binding.root
     }

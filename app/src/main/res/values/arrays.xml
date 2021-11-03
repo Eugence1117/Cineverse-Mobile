@@ -9,4 +9,12 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+
+    <!--Sort Selection -->
+    <string-array name="sort_entries">
+        <item>Movie Name</item>
+        <item>Last Update Date</item>
+        <item>Schedule Date</item>
+        <item>Status</item>
+    </string-array>
 </resources>
