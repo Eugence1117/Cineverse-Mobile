@@ -3,6 +3,8 @@ package com.example.cineverseprototype
 class Constant {
     companion object{
         const val WEB_SERVICE_DOMAIN_NAME:String = "domainName"
+        const val WEB_SOCKET_URL_ADDRESS:String = "websocketURL"
+
         const val APPLICATION_PREFERENCES:String = "cineverse_app_pref"
         const val CAMERA_PERMISSION:String = "cineverse_camera_permission"
 

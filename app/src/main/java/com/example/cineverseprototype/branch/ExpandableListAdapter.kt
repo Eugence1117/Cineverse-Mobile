@@ -2,6 +2,7 @@ package com.example.cineverseprototype.branch
 
 import android.content.Context
 import android.graphics.Typeface
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +20,8 @@ class ExpandableListAdapter(
     val listTitle:List<StateLabel>,
     val listDetail:Map<StateLabel,List<Branch>>): BaseExpandableListAdapter(),Filterable {
 
-    private var filteredData:MutableMap<StateLabel,ArrayList<Branch>> = LinkedHashMap()
-    private var filteredGroup:ArrayList<StateLabel> = ArrayList()
+    private var filteredData:MutableMap<StateLabel,MutableList<Branch>> = LinkedHashMap()
+    private var filteredGroup:MutableList<StateLabel> = ArrayList()
 
     override fun getGroupCount(): Int {
         return filteredGroup.size
@@ -101,17 +102,30 @@ class ExpandableListAdapter(
                     filterResult.count = listDetail.size
                 }
                 else{
-                    val filteredData:MutableMap<StateLabel,ArrayList<Branch>> = LinkedHashMap()
+                    val filteredData:MutableMap<StateLabel,MutableList<Branch>> = LinkedHashMap()
+                    Log.i("Debug","Filtering $constraint")
                     for(key in listTitle){
                         val listItem = listDetail[key]
-                        if(listItem != null){
-                            for(branch in listItem){
-                                if(branch.address.contains(constraint) || branch.branchName.contains(constraint) || branch.district.contains(constraint) || branch.state.contains(constraint)){
-                                    if(filteredData.contains(key)){
-                                        val branches = filteredData[key]
-                                        if(branches != null){
-                                            branches.add(branch)
-                                            filteredData[key] = branches
+                        if(key.stateName.contains(constraint,true)){
+                            if(listItem != null){
+                                filteredData[key] = listItem.toMutableList()
+                            }
+                        }
+                        else{
+                            if(listItem != null){
+                                for(branch in listItem){
+                                    if(branch.address.contains(constraint,true) || branch.branchName.contains(constraint,true) || branch.district.contains(constraint,true) || branch.state.contains(constraint,true)){
+                                        if(filteredData.contains(key)){
+                                            val branches = filteredData[key]
+                                            if(branches != null){
+                                                branches.add(branch)
+                                                filteredData[key] = branches
+                                            }
+                                            else{
+                                                val branches:ArrayList<Branch> = ArrayList()
+                                                branches.add(branch)
+                                                filteredData[key] = branches
+                                            }
                                         }
                                         else{
                                             val branches:ArrayList<Branch> = ArrayList()
@@ -119,15 +133,11 @@ class ExpandableListAdapter(
                                             filteredData[key] = branches
                                         }
                                     }
-                                    else{
-                                        val branches:ArrayList<Branch> = ArrayList()
-                                        branches.add(branch)
-                                        filteredData[key] = branches
-                                    }
                                 }
                             }
                         }
                     }
+                    Log.i("Debug","Total Count ${filteredData.size}")
                     filterResult.values = filteredData
                     filterResult.count = filteredData.size
                 }
@@ -137,14 +147,17 @@ class ExpandableListAdapter(
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 if(results != null){
                     if(results.values != null){
-                        filteredData = results?.values as MutableMap<StateLabel,ArrayList<Branch>>
+                        val dataList = results?.values as MutableMap<StateLabel,MutableList<Branch>>
+                        val sortMap = dataList.toSortedMap(kotlin.Comparator { o1, o2 ->  o1.stateName.compareTo(o2.stateName)})
+
+                        filteredData = sortMap
                         filteredGroup.clear()
                         for(key in filteredData.keys){
                             filteredGroup.add(key)
                         }
                     }
                     else{
-                        filteredData = LinkedHashMap<StateLabel,ArrayList<Branch>>()
+                        filteredData = LinkedHashMap<StateLabel,MutableList<Branch>>()
                     }
                 }
                 notifyDataSetChanged()

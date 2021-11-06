@@ -1,2 +1,4 @@
 include ':app'
 rootProject.name = "CineversePrototype"
+include ':lib'
+include ':test-server'

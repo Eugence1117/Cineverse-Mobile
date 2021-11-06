@@ -5,7 +5,10 @@
             app:key="domainName"
             app:title="Web Service Address"
             app:useSimpleSummaryProvider="true"/>
-
+        <EditTextPreference
+            app:key="websocketURL"
+            app:title="Web Socket Address"
+            app:useSimpleSummaryProvider="true"/>
 <!--        <EditTextPreference-->
 <!--            app:key="signature"-->
 <!--            app:title="@string/signature_title"-->

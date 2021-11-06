@@ -2,15 +2,14 @@ package com.example.cineverseprototype.theatre
 
 import android.animation.ValueAnimator
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.animation.ScaleAnimation
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.android.volley.*
 import com.android.volley.toolbox.JsonObjectRequest
@@ -19,12 +18,14 @@ import com.example.cineverseprototype.Singleton
 import com.example.cineverseprototype.Util
 import com.example.cineverseprototype.databinding.ActivitySeatBookingBinding
 import com.example.cineverseprototype.movie.Movie
-import com.example.cineverseprototype.movie.MovieRecycleAdapter
 import com.example.cineverseprototype.payment.PaymentActivity
 import com.example.cineverseprototype.schedule.Schedule
-import org.json.JSONArray
+import org.java_websocket.WebSocket
 import org.json.JSONException
 import org.json.JSONObject
+import ua.naiksoftware.stomp.LifecycleEvent
+import ua.naiksoftware.stomp.Stomp
+import ua.naiksoftware.stomp.client.StompClient
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 
@@ -35,6 +36,8 @@ class SeatBookingActivity : AppCompatActivity() {
 
     private var totalPrice:Double = 0.0
     private val seatSelected:MutableSet<String> = HashSet<String>()
+
+    private var stompClient: StompClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +74,7 @@ class SeatBookingActivity : AppCompatActivity() {
             binding.price.text = String.format("%.2f",totalPrice)
 
             retrieveData(schedule.scheduleId)
-
+            initiateWebSocket(schedule.scheduleId)
             binding.paymentBtn.setOnClickListener {
                 if(seatSelected.size > 0){
 
@@ -125,6 +128,39 @@ class SeatBookingActivity : AppCompatActivity() {
             binding.price.text = String.format("%.2f",it.animatedValue as Float)
         }
         animator.start()
+    }
+
+    private fun initiateWebSocket(scheduleId:String){
+        val preference = Singleton.getInstance(this).preference
+        val domain = preference.getString(Constant.WEB_SOCKET_URL_ADDRESS,null)
+        if(domain == null){
+            Singleton.getInstance(applicationContext).showToast("No connection established. Please specify the websocket connection in Setting.",Toast.LENGTH_LONG)
+        }
+        else{
+            stompClient = Stomp.over(WebSocket::class.java,domain)
+            Log.i(TAG,"/topic/schedule/$scheduleId")
+            stompClient!!.topic("/topic/schedule/$scheduleId").subscribe {
+                Log.d(TAG, it.payload)
+            }
+            stompClient!!.send("/topic/schedule/$scheduleId", "['A1']").subscribe{
+                Log.i(TAG,"Item Sent")
+            }
+            stompClient!!.lifecycle().subscribe {
+                when(it.type) {
+                    LifecycleEvent.Type.OPENED -> {
+                        Log.d(TAG, "Stomp connection opened ${stompClient!!.isConnected}");
+                    }
+                    LifecycleEvent.Type.ERROR -> {
+                        Log.d(TAG, "Stomp connection error");
+                    }
+                    LifecycleEvent.Type.CLOSED -> {
+                        Log.d(TAG, "Stomp connection closed");
+                    }
+                }
+            }
+            stompClient!!.connect(true)
+
+        }
     }
 
     private fun retrieveData(scheduleId:String){
