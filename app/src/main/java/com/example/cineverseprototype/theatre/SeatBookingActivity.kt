@@ -37,8 +37,6 @@ class SeatBookingActivity : AppCompatActivity() {
     private var totalPrice:Double = 0.0
     private val seatSelected:MutableSet<String> = HashSet<String>()
 
-    private var stompClient: StompClient? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySeatBookingBinding.inflate(layoutInflater)
@@ -74,7 +72,6 @@ class SeatBookingActivity : AppCompatActivity() {
             binding.price.text = String.format("%.2f",totalPrice)
 
             retrieveData(schedule.scheduleId)
-            initiateWebSocket(schedule.scheduleId)
             binding.paymentBtn.setOnClickListener {
                 if(seatSelected.size > 0){
 
@@ -128,39 +125,6 @@ class SeatBookingActivity : AppCompatActivity() {
             binding.price.text = String.format("%.2f",it.animatedValue as Float)
         }
         animator.start()
-    }
-
-    private fun initiateWebSocket(scheduleId:String){
-        val preference = Singleton.getInstance(this).preference
-        val domain = preference.getString(Constant.WEB_SOCKET_URL_ADDRESS,null)
-        if(domain == null){
-            Singleton.getInstance(applicationContext).showToast("No connection established. Please specify the websocket connection in Setting.",Toast.LENGTH_LONG)
-        }
-        else{
-            stompClient = Stomp.over(WebSocket::class.java,domain)
-            Log.i(TAG,"/topic/schedule/$scheduleId")
-            stompClient!!.topic("/topic/schedule/$scheduleId").subscribe {
-                Log.d(TAG, it.payload)
-            }
-            stompClient!!.send("/topic/schedule/$scheduleId", "['A1']").subscribe{
-                Log.i(TAG,"Item Sent")
-            }
-            stompClient!!.lifecycle().subscribe {
-                when(it.type) {
-                    LifecycleEvent.Type.OPENED -> {
-                        Log.d(TAG, "Stomp connection opened ${stompClient!!.isConnected}");
-                    }
-                    LifecycleEvent.Type.ERROR -> {
-                        Log.d(TAG, "Stomp connection error");
-                    }
-                    LifecycleEvent.Type.CLOSED -> {
-                        Log.d(TAG, "Stomp connection closed");
-                    }
-                }
-            }
-            stompClient!!.connect(true)
-
-        }
     }
 
     private fun retrieveData(scheduleId:String){
