@@ -133,7 +133,7 @@ class MovieScheduleActivity : AppCompatActivity() {
         val expiredDialog = Util.createSessionExpiredDialog(this)
         val domain = preference.getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
         if(domain == null){
-            Toast.makeText(this,"No connection established. Please specify the connection in Setting.",
+            ToastUtil.initializeToast(applicationContext,"No connection established. Please specify the connection in Setting.",
                 Toast.LENGTH_LONG).show()
         }
         else{
@@ -154,7 +154,8 @@ class MovieScheduleActivity : AppCompatActivity() {
                             if(it.isNull("result")){
                                 showOrHideSchedule(false)
                                 val errorMsg = it.getString("errorMsg")
-                                Toast.makeText(this,errorMsg, Toast.LENGTH_SHORT).show()
+                                ToastUtil.initializeToast(applicationContext,errorMsg,
+                                    Toast.LENGTH_LONG).show()
                             }
                             else{
                                 val result = it.get("result") as JSONObject
@@ -164,7 +165,6 @@ class MovieScheduleActivity : AppCompatActivity() {
 
                                 if(result.length() == 0){
                                     showOrHideSchedule(false)
-                                    //Toast.makeText(this,"No Schedule Available",Toast.LENGTH_SHORT).show()
                                 }
                                 else{
                                     showOrHideSchedule(true)
@@ -218,52 +218,52 @@ class MovieScheduleActivity : AppCompatActivity() {
                         catch (ex: JSONException){
                             showOrHideSchedule(false)
                             Log.e(TAG,ex.stackTraceToString())
-                            Toast.makeText(this,"Unable to process the data from server. Please try again later.",
-                                Toast.LENGTH_SHORT).show()
+                            ToastUtil.initializeToast(applicationContext,"Unable to process the data from server. Please try again later.",
+                                Toast.LENGTH_LONG).show()
                         }
                     },
                     {
                         hideLoading()
                         if (it is TimeoutError || it is NoConnectionError) {
-                            Toast.makeText(this, "Request timed out. Please try again later.",
+                            ToastUtil.initializeToast(applicationContext,"Request timed out. Please try again later.",
                                 Toast.LENGTH_LONG).show()
                         } else if (it is AuthFailureError) {
                             expiredDialog.show()
                         } else if (it is ServerError) {
-                            Toast.makeText(this,"Unexpected error occurred. Please try again later.",
+                            ToastUtil.initializeToast(applicationContext,"Unexpected error occurred. Please try again later.",
                                 Toast.LENGTH_LONG).show()
                         } else if (it is NetworkError) {
-                            Toast.makeText(this,"Unexpected error occurred. Please try again later.",
+                            ToastUtil.initializeToast(applicationContext,"Unexpected error occurred. Please try again later.",
                                 Toast.LENGTH_LONG).show()
                         } else if (it is ParseError) {
-                            Toast.makeText(this,"Received unexpected response from server. Please try again later.",
+                            ToastUtil.initializeToast(applicationContext,"Received unexpected response from server. Please try again later.",
                                 Toast.LENGTH_LONG).show()
                         }
                         else{
                             try{
                                 when (it.networkResponse.statusCode) {
                                     HttpURLConnection.HTTP_BAD_REQUEST -> {
-                                        Toast.makeText(this,"Unable to process your request. Please try again later.",
-                                            Toast.LENGTH_SHORT).show()
+                                        ToastUtil.initializeToast(applicationContext,"Unable to process your request. Please try again later.",
+                                            Toast.LENGTH_LONG).show()
                                     }
                                     HttpURLConnection.HTTP_NOT_FOUND -> {
-                                        Toast.makeText(this,"Unable to locate the service you request. Please try again later.",
-                                            Toast.LENGTH_SHORT).show()
+                                        ToastUtil.initializeToast(applicationContext,"Unable to locate the service you request. Please try again later.",
+                                            Toast.LENGTH_LONG).show()
                                     }
                                     HttpURLConnection.HTTP_INTERNAL_ERROR -> {
-                                        Toast.makeText(this,"Unknown error occurred. Please try again later.",
-                                            Toast.LENGTH_SHORT).show()
+                                        ToastUtil.initializeToast(applicationContext,"Unknown error occurred. Please try again later.",
+                                            Toast.LENGTH_LONG).show()
                                     }
                                     HttpURLConnection.HTTP_UNAUTHORIZED -> {
-                                        Toast.makeText(this,"Account not found. Please try again.",
-                                            Toast.LENGTH_SHORT).show()
+                                        ToastUtil.initializeToast(applicationContext,"Account not found. Please try again.",
+                                            Toast.LENGTH_LONG).show()
                                     }
                                 }
                             }
                             catch(ex:Exception){
                                 Log.e(TAG,ex.stackTraceToString())
-                                Toast.makeText(this,"Unexpected error occurred. Please try again later.",
-                                    Toast.LENGTH_SHORT).show()
+                                ToastUtil.initializeToast(applicationContext,"Unexpected error occurred. Please try again later.",
+                                    Toast.LENGTH_LONG).show()
                             }
                         }
                     }){

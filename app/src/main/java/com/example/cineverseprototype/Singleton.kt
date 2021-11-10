@@ -50,18 +50,6 @@ class Singleton constructor(context: Context) {
         Picasso.get()
     }
 
-    val toast: Toast by lazy{
-        Toast.makeText(context,"",Toast.LENGTH_SHORT)
-    }
-
-    fun showToast(msg:String,length:Int){
-        toast.cancel()
-
-        toast.setText(msg)
-        toast.duration = length
-        toast.show()
-    }
-
     val preference: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
     }

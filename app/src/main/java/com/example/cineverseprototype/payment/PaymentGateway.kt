@@ -9,11 +9,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
-import com.example.cineverseprototype.Constant
-import com.example.cineverseprototype.MainActivity
+import com.example.cineverseprototype.*
 import com.example.cineverseprototype.R
-import com.example.cineverseprototype.Singleton
-import com.example.cineverseprototype.Util
 import com.example.cineverseprototype.databinding.ActivityPaymentGatewayBinding
 import org.json.JSONArray
 import org.json.JSONException
@@ -92,8 +89,8 @@ class PaymentGateway : AppCompatActivity() {
         val expiredDialog = Util.createSessionExpiredDialog(this)
         val domain = preference.getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
         if(domain == null){
-            Singleton.getInstance(applicationContext).showToast("No connection established. Please specify the connection in Setting.",
-                Toast.LENGTH_LONG)
+            ToastUtil.initializeToast(applicationContext,"No connection established. Please specify the connection in Setting.",
+                Toast.LENGTH_LONG).show()
         }
         else{
             val cookie = preference.getString(Constant.SESSION_COOKIE,null)

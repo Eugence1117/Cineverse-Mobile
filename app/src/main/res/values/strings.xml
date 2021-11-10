@@ -89,4 +89,5 @@
     <string name="emptyTicketMsg">No schedule ahead. Feel free to book more ticket.</string>
     <string name="emptyScheduleMsg">No Schedule Available</string>
     <string name="emptyMovieMsg">No movie available. Please visit another branch to look for some movie.</string>
+    <string name="emptyLatestMovieMsg">No movie available. Check out more movie by visits over the branch list.</string>
 </resources>

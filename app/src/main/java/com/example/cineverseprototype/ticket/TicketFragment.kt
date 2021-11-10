@@ -85,7 +85,7 @@ class TicketFragment : Fragment() {
         val preference = Singleton.getInstance(requireContext()).preference
         val domainName = preference.getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
         if(domainName == null){
-            Toast.makeText(requireContext(),"No connection established. Please specify the connection in Setting.",
+            ToastUtil.initializeToast(requireContext(),"No connection established. Please specify the connection in Setting.",
                 Toast.LENGTH_LONG).show()
         }
         else{
@@ -107,7 +107,8 @@ class TicketFragment : Fragment() {
                                 if(!it.isNull("errorMsg")){
                                     val errorMsg = it.getString("errorMsg")
                                     showOrHideSchedule(false)
-                                    Toast.makeText(requireContext(),errorMsg, Toast.LENGTH_SHORT).show()
+                                    ToastUtil.initializeToast(requireContext(),errorMsg,
+                                        Toast.LENGTH_LONG).show()
                                 }
                                 else {
                                     if(it.isNull("result")){
@@ -138,55 +139,54 @@ class TicketFragment : Fragment() {
                         catch(ex: JSONException){
                             Log.e(TAG,ex.stackTraceToString())
                             showOrHideSchedule(false)
-                            Singleton.getInstance(requireContext()).showToast("Unable to process the data from server. Please try again later.",
-                                Toast.LENGTH_LONG)
+                            ToastUtil.initializeToast(requireContext(),"Unable to process the data from server. Please try again later.",
+                                Toast.LENGTH_LONG).show()
                         }
                     },
                     {
                         hideLoading()
                         if (it is TimeoutError || it is NoConnectionError) {
-                            Singleton.getInstance(requireContext()).showToast("Request timed out. Please try again later.",
-                                Toast.LENGTH_LONG)
+                            ToastUtil.initializeToast(requireContext(),"Request timed out. Please try again later.",
+                                Toast.LENGTH_LONG).show()
                         } else if (it is AuthFailureError) {
                             if(isAdded){
                                 expiredDialog.show()
                             }
                         } else if (it is ServerError) {
-                            Singleton.getInstance(requireContext()).showToast("Unexpected error occurred. Please try again later.",
-                                Toast.LENGTH_LONG)
+                            ToastUtil.initializeToast(requireContext(),"Unexpected error occurred. Please try again later.",
+                                Toast.LENGTH_LONG).show()
                         } else if (it is NetworkError) {
-                            Singleton.getInstance(requireContext()).showToast("Unexpected error occurred. Please try again later.",
-                                Toast.LENGTH_LONG)
+                            ToastUtil.initializeToast(requireContext(),"Unexpected error occurred. Please try again later.",
+                                Toast.LENGTH_LONG).show()
                         } else if (it is ParseError) {
-                            Singleton.getInstance(requireContext()).showToast("Received unexpected response from server. Please try again later.",
-                                Toast.LENGTH_LONG)
+                            ToastUtil.initializeToast(requireContext(),"Received unexpected response from server. Please try again later.",
+                                Toast.LENGTH_LONG).show()
                         }
                         else{
                             try{
                                 when (it.networkResponse.statusCode) {
                                     HttpURLConnection.HTTP_BAD_REQUEST -> {
-                                        Singleton.getInstance(requireContext()).showToast("Unable to process your request. Please try again later.",
-                                            Toast.LENGTH_LONG)
-                                        Toast.makeText(requireContext(),"", Toast.LENGTH_SHORT).show()
+                                        ToastUtil.initializeToast(requireContext(),"Unable to process your request. Please try again later.",
+                                            Toast.LENGTH_LONG).show()
                                     }
                                     HttpURLConnection.HTTP_NOT_FOUND -> {
-                                        Singleton.getInstance(requireContext()).showToast("Unable to locate the service you request. Please try again later.",
-                                            Toast.LENGTH_LONG)
+                                        ToastUtil.initializeToast(requireContext(),"Unable to locate the service you request. Please try again later.",
+                                            Toast.LENGTH_LONG).show()
                                     }
                                     HttpURLConnection.HTTP_INTERNAL_ERROR -> {
-                                        Singleton.getInstance(requireContext()).showToast("Unknown error occurred. Please try again later.",
-                                            Toast.LENGTH_LONG)
+                                        ToastUtil.initializeToast(requireContext(),"Unknown error occurred. Please try again later.",
+                                            Toast.LENGTH_LONG).show()
                                     }
                                     HttpURLConnection.HTTP_UNAUTHORIZED -> {
-                                        Singleton.getInstance(requireContext()).showToast("Account not found. Please try again.",
-                                            Toast.LENGTH_LONG)
+                                        ToastUtil.initializeToast(requireContext(),"Account not found. Please try again.",
+                                            Toast.LENGTH_LONG).show()
                                     }
                                 }
                             }
                             catch(ex:Exception){
                                 Log.e(TAG,ex.stackTraceToString())
-                                Singleton.getInstance(requireContext()).showToast("Unexpected error occurred. Please try again later.",
-                                    Toast.LENGTH_LONG)
+                                ToastUtil.initializeToast(requireContext(),"Unexpected error occurred. Please try again later.",
+                                    Toast.LENGTH_LONG).show()
                             }
                         }
                     }){

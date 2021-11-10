@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.cineverseprototype.Singleton
+import com.example.cineverseprototype.ToastUtil
 import com.example.cineverseprototype.databinding.ActivityViewPaymentBinding
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
@@ -75,8 +76,8 @@ class ViewPaymentActivity : AppCompatActivity() {
                 val clip = ClipData.newPlainText("ReferenceId", payment.paymentId)
                 clipboard.setPrimaryClip(clip)
 
-                Singleton.getInstance(applicationContext).showToast("Reference ID has been copied to your clipboard.",
-                    Toast.LENGTH_SHORT)
+                ToastUtil.initializeToast(applicationContext,"Unexpected error occurred. Please try again later.",
+                    Toast.LENGTH_LONG).show()
             }
         }
         else{
