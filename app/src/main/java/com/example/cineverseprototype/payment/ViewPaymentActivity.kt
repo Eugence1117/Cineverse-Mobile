@@ -76,8 +76,8 @@ class ViewPaymentActivity : AppCompatActivity() {
                 val clip = ClipData.newPlainText("ReferenceId", payment.paymentId)
                 clipboard.setPrimaryClip(clip)
 
-                ToastUtil.initializeToast(applicationContext,"Unexpected error occurred. Please try again later.",
-                    Toast.LENGTH_LONG).show()
+                ToastUtil.initializeToast(applicationContext,"Reference ID has been copied to your clipboard.",
+                    Toast.LENGTH_SHORT).show()
             }
         }
         else{
