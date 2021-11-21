@@ -29,6 +29,8 @@ import com.example.cineverseprototype.databinding.ActivityRegistrationBinding
 import com.example.cineverseprototype.picasso.CircleTransform
 import com.example.cineverseprototype.volley.FileDataPart
 import com.example.cineverseprototype.volley.VolleyMultipartRequest
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONObject
@@ -242,13 +244,13 @@ class RegistrationActivity : AppCompatActivity() {
         binding.passwordInput.doAfterTextChanged {
             val password = it.toString()
             if(password.isNullOrEmpty()){
-                binding.passwordInput.error = "Please fill-in this field."
+                binding.passwordLayout.error = "Please fill-in this field."
             }
             else if(password.length < Constant.PASSWORD_MIN_LENGTH || password.length > Constant.PASSWORD_MAX_LENGTH){
-                binding.passwordInput.error = "Password must consist of ${Constant.PASSWORD_MIN_LENGTH}-${Constant.PASSWORD_MAX_LENGTH} Characters."
+                binding.passwordLayout.error = "Password must consist of ${Constant.PASSWORD_MIN_LENGTH}-${Constant.PASSWORD_MAX_LENGTH} Characters."
             }
             else{
-                binding.passwordInput.error = null
+                binding.passwordLayout.error = null
             }
         }
 
@@ -256,13 +258,13 @@ class RegistrationActivity : AppCompatActivity() {
             val fullName = it.toString()
             Log.i(TAG,"Full Name $it, Matches${fullName.matches("/^[A-Za-z\\s]*\$/".toRegex())}")
             if(fullName.isNullOrEmpty()){
-                binding.fullNameInput.error = "Please fill-in this field."
+                binding.fullNameLayout.error = "Please fill-in this field."
             }
             else if(!fullName.matches("^[A-Za-z ]*\$".toRegex())){
-                binding.fullNameInput.error = "Full Name only allow upper case and lower characters with spacing."
+                binding.fullNameLayout.error = "Full Name only allow upper case and lower characters with spacing."
             }
             else{
-                binding.fullNameInput.error = null
+                binding.fullNameLayout.error = null
             }
         }
 
@@ -286,14 +288,37 @@ class RegistrationActivity : AppCompatActivity() {
         super.onDestroy()
         queueRequest?.stop()
     }
+
     private fun showDatePicker(){
+        val constraints =CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now())
+            .build()
+
         val dateRangePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Your Birth Date")
+            .setCalendarConstraints(constraints)
             .build()
+
         dateRangePicker.addOnPositiveButtonClickListener {
             var timestamp = dateRangePicker.selection
             Log.i(TAG,"Parameter$it & Selection$timestamp")
             if (timestamp != null) {
+
+                val birthDate = Date(timestamp as Long)
+                val birthDateCal = Calendar.getInstance()
+                birthDateCal.time = birthDate
+
+                val currentDateCal = Calendar.getInstance()
+                currentDateCal.time = Date()
+
+                val years = currentDateCal.get(Calendar.YEAR) - birthDateCal.get(Calendar.YEAR)
+                if(years < 18){
+                    binding.birthDateLayout.error = "You must be at least 18 years old to register an account."
+                }
+                else{
+                    binding.birthDateLayout.error = null
+                }
+
                 var format = SimpleDateFormat("dd MMM yyyy")
                 binding.birthDateInput.setText(format.format(Date(timestamp!!)))
                 binding.birthDateInput.tag = timestamp
@@ -364,14 +389,14 @@ class RegistrationActivity : AppCompatActivity() {
 
         val fullName = binding.fullNameInput.text.toString()
         if(fullName.isNullOrEmpty()){
-            binding.fullNameInput.error = "Please fill-in this field."
+            binding.fullNameLayout.error = "Please fill-in this field."
             if(firstFocusElement == null){
                 firstFocusElement = binding.fullNameLayout
             }
             isValid = false
         }
         else if(!fullName.matches(Regex("^[A-Za-z ]*\$"))){
-            binding.fullNameInput.error = "Full Name only allow upper case and lower characters with spacing."
+            binding.fullNameLayout.error = "Full Name only allow upper case and lower characters with spacing."
             if(firstFocusElement == null){
                 firstFocusElement = binding.fullNameLayout
             }
@@ -383,14 +408,14 @@ class RegistrationActivity : AppCompatActivity() {
 
         val password = binding.passwordInput.text.toString()
         if(password.isNullOrEmpty()){
-            binding.passwordInput.error = "Please fill-in this field."
+            binding.passwordLayout.error = "Please fill-in this field."
             if(firstFocusElement == null){
                 firstFocusElement = binding.passwordLayout
             }
             isValid = false
         }
         else if(password.length < Constant.PASSWORD_MIN_LENGTH || password.length > Constant.PASSWORD_MAX_LENGTH){
-            binding.passwordInput.error = "Password must consist of ${Constant.PASSWORD_MIN_LENGTH}-${Constant.PASSWORD_MAX_LENGTH} Characters."
+            binding.passwordLayout.error = "Password must consist of ${Constant.PASSWORD_MIN_LENGTH}-${Constant.PASSWORD_MAX_LENGTH} Characters."
             if(firstFocusElement == null){
                 firstFocusElement = binding.passwordLayout
             }
@@ -401,22 +426,51 @@ class RegistrationActivity : AppCompatActivity() {
 
         val timestamp = binding.birthDateInput.tag
         if(timestamp == null){
-            binding.birthDateInput.error = "Please select your birth date."
+            binding.birthDateLayout.error = "Please select your birth date."
             if(firstFocusElement == null){
                 firstFocusElement = binding.birthDateLayout
             }
             isValid = false
         }
         else if(timestamp !is Long){
-            binding.birthDateInput.error = "Invalid Date."
+            binding.birthDateLayout.error = "Invalid Date."
             if(firstFocusElement == null){
                 firstFocusElement = binding.birthDateLayout
             }
             isValid = false
         }
         else{
-            binding.birthDateLayout.error = null
+            val birthDate = Date(timestamp as Long)
+            val birthDateCal = Calendar.getInstance()
+            birthDateCal.time = birthDate
+
+            val currentDateCal = Calendar.getInstance()
+            currentDateCal.time = Date()
+
+            val years = currentDateCal.get(Calendar.YEAR) - birthDateCal.get(Calendar.YEAR)
+            if(years < 18){
+                binding.birthDateLayout.error = "You must be at least 18 years old to register an account."
+                if(firstFocusElement == null){
+                    firstFocusElement = binding.birthDateLayout
+                }
+                isValid = false
+            }
+            else{
+                binding.birthDateLayout.error = null
+            }
         }
+
+        if(!binding.termButton.isChecked){
+            binding.termButton.error = "Please check this field to proceed."
+            if(firstFocusElement == null){
+                firstFocusElement = binding.termButton
+            }
+            isValid = false
+        }
+        else{
+            binding.termButton.error = null
+        }
+
 
         if(!isValid && firstFocusElement != null){
             firstFocusElement.requestFocus()
