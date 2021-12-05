@@ -24,6 +24,7 @@ import com.example.cineverseprototype.payment.*
 import com.example.cineverseprototype.picasso.CircleTransform
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.squareup.picasso.Callback
+import com.squareup.picasso.MemoryPolicy
 import org.json.JSONException
 import org.w3c.dom.Text
 import java.net.HttpURLConnection
@@ -359,7 +360,7 @@ class ProfileFragment : Fragment() {
             })
         }
         else{
-            Singleton.getInstance(requireContext()).picasso.load(member.picUrl).transform(CircleTransform()).placeholder(R.drawable.baseline_account_circle_grey_300_48dp).into(binding.profilePic,object:Callback{
+            Singleton.getInstance(requireContext()).picasso.load(member.picUrl).transform(CircleTransform()).placeholder(R.drawable.baseline_account_circle_grey_300_48dp).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(binding.profilePic,object:Callback{
                 override fun onSuccess() {
                     hidePictureLoading()
                 }

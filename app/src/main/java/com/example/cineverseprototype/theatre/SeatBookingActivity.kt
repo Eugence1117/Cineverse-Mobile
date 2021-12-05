@@ -21,12 +21,8 @@ import com.example.cineverseprototype.databinding.ActivitySeatBookingBinding
 import com.example.cineverseprototype.movie.Movie
 import com.example.cineverseprototype.payment.PaymentActivity
 import com.example.cineverseprototype.schedule.Schedule
-import org.java_websocket.WebSocket
 import org.json.JSONException
 import org.json.JSONObject
-import ua.naiksoftware.stomp.LifecycleEvent
-import ua.naiksoftware.stomp.Stomp
-import ua.naiksoftware.stomp.client.StompClient
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 

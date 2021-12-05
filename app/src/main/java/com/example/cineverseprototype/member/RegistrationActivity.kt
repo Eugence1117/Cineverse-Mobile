@@ -59,143 +59,157 @@ class RegistrationActivity : AppCompatActivity() {
         supportActionBar?.title = "Register Member"
         binding.progress.hide()
 
-        queueRequest = Volley.newRequestQueue(this)
-        //loadDefaultProfilePic()
+        val domain = getPreference().getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
+        if(domain.isNullOrEmpty()) {
+            Log.i(TAG,"No connection")
+            val dialog = AlertDialog.Builder(this)
+            dialog.setTitle("No Connection")
+            dialog.setMessage("No connection established to the server, please define your connection via Setting - Web Service Address")
+            dialog.setPositiveButton("OK",null)
+            dialog.setOnDismissListener {
+                finish()
+            }
+            dialog.show()
+        }
+        else{
+            queueRequest = Volley.newRequestQueue(this)
+            //loadDefaultProfilePic()
 
-        binding.signUpButton.setOnClickListener {
-            if(validateField()){
-                startLoading()
+            binding.signUpButton.setOnClickListener {
+                if(validateField()){
+                    startLoading()
 
-                val domain = getPreference().getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
-                if(domain == null){
-                    ToastUtil.initializeToast(applicationContext,"No connection established to the server.", Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    val date = Date(binding.birthDateInput.tag as Long)
-                    val username = binding.usernameInput.text.toString()
-                    val fullName = binding.fullNameInput.text.toString()
-                    val email = binding.emailInput.text.toString()
-                    val password = binding.passwordInput.text.toString()
-
-                    lateinit var form:RegistrationForm
-                    if(imageUri == null){
-                        form =
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                val defaultIcon = AppCompatResources.getDrawable(this,R.drawable.baseline_account_circle_grey_300_48dp)
-                                val bitmap = getBitmap(defaultIcon as VectorDrawable)
-                                val stream = ByteArrayOutputStream()
-                                bitmap.compress(Bitmap.CompressFormat.PNG,100,stream)
-                                var file = FileDataPart("ProfileImage.png",stream.toByteArray(),"png")
-                                RegistrationForm(fullName,username,date,password,email,file)
-                        } else {
-                            //ContextCompat.getDrawable(this,R.drawable.baseline_account_circle_grey_300_48dp)
-                            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.baseline_account_circle_grey_300_48dp)
-                            val stream = ByteArrayOutputStream()
-                            bitmap.compress(Bitmap.CompressFormat.PNG,100,stream)
-
-                            var file = FileDataPart("ProfileImage.png",stream.toByteArray(),"png")
-                            RegistrationForm(fullName,username,date,password,email,file)
-                        }
+                    val domain = getPreference().getString(Constant.WEB_SERVICE_DOMAIN_NAME,null)
+                    if(domain.isNullOrEmpty()){
+                        ToastUtil.initializeToast(applicationContext,"No connection established to the server.", Toast.LENGTH_SHORT).show()
                     }
                     else{
-                        val picture = Util.createImageData(imageUri!!.data!!,contentResolver)
-                        form = if(picture != null){
-                            val extension = Util.getFileExtentsion(imageUri!!.data!!,contentResolver)
-                            var file = FileDataPart("ProfileImage.${extension}",picture,extension!!)
-                            RegistrationForm(fullName,username,date,password,email,file)
-                        } else{
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                val defaultIcon = AppCompatResources.getDrawable(this,R.drawable.baseline_account_circle_grey_300_48dp)
-                                val bitmap = getBitmap(defaultIcon as VectorDrawable)
-                                val stream = ByteArrayOutputStream()
-                                bitmap.compress(Bitmap.CompressFormat.PNG,100,stream)
-                                var file = FileDataPart("ProfileImage.png",stream.toByteArray(),"png")
-                                RegistrationForm(fullName,username,date,password,email,file)
-                            } else {
-                                //ContextCompat.getDrawable(this,R.drawable.baseline_account_circle_grey_300_48dp)
-                                val bitmap = BitmapFactory.decodeResource(resources, R.drawable.baseline_account_circle_grey_300_48dp)
-                                val stream = ByteArrayOutputStream()
-                                bitmap.compress(Bitmap.CompressFormat.PNG,100,stream)
+                        val date = Date(binding.birthDateInput.tag as Long)
+                        val username = binding.usernameInput.text.toString()
+                        val fullName = binding.fullNameInput.text.toString()
+                        val email = binding.emailInput.text.toString()
+                        val password = binding.passwordInput.text.toString()
 
-                                var file = FileDataPart("ProfileImage.png",stream.toByteArray(),"png")
+                        lateinit var form:RegistrationForm
+                        if(imageUri == null){
+                            form =
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    val defaultIcon = AppCompatResources.getDrawable(this,R.drawable.baseline_account_circle_grey_300_48dp)
+                                    val bitmap = getBitmap(defaultIcon as VectorDrawable)
+                                    val stream = ByteArrayOutputStream()
+                                    bitmap.compress(Bitmap.CompressFormat.PNG,100,stream)
+                                    var file = FileDataPart("ProfileImage.png",stream.toByteArray(),"png")
+                                    RegistrationForm(fullName,username,date,password,email,file)
+                                } else {
+                                    //ContextCompat.getDrawable(this,R.drawable.baseline_account_circle_grey_300_48dp)
+                                    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.baseline_account_circle_grey_300_48dp)
+                                    val stream = ByteArrayOutputStream()
+                                    bitmap.compress(Bitmap.CompressFormat.PNG,100,stream)
+
+                                    var file = FileDataPart("ProfileImage.png",stream.toByteArray(),"png")
+                                    RegistrationForm(fullName,username,date,password,email,file)
+                                }
+                        }
+                        else{
+                            val picture = Util.createImageData(imageUri!!.data!!,contentResolver)
+                            form = if(picture != null){
+                                val extension = Util.getFileExtentsion(imageUri!!.data!!,contentResolver)
+                                var file = FileDataPart("ProfileImage.${extension}",picture,extension!!)
                                 RegistrationForm(fullName,username,date,password,email,file)
+                            } else{
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    val defaultIcon = AppCompatResources.getDrawable(this,R.drawable.baseline_account_circle_grey_300_48dp)
+                                    val bitmap = getBitmap(defaultIcon as VectorDrawable)
+                                    val stream = ByteArrayOutputStream()
+                                    bitmap.compress(Bitmap.CompressFormat.PNG,100,stream)
+                                    var file = FileDataPart("ProfileImage.png",stream.toByteArray(),"png")
+                                    RegistrationForm(fullName,username,date,password,email,file)
+                                } else {
+                                    //ContextCompat.getDrawable(this,R.drawable.baseline_account_circle_grey_300_48dp)
+                                    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.baseline_account_circle_grey_300_48dp)
+                                    val stream = ByteArrayOutputStream()
+                                    bitmap.compress(Bitmap.CompressFormat.PNG,100,stream)
+
+                                    var file = FileDataPart("ProfileImage.png",stream.toByteArray(),"png")
+                                    RegistrationForm(fullName,username,date,password,email,file)
+                                }
                             }
                         }
-                    }
-                    val retryPolicy = DefaultRetryPolicy(0, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+                        val retryPolicy = DefaultRetryPolicy(0, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
 
-                    val api = "$domain/guest/registerAccount"
-                    val req = object : VolleyMultipartRequest(
-                        Method.POST,
-                        api,
-                        Response.Listener { response ->
-                            if(!isFinishing){
-                                finishLoading()
+                        val api = "$domain/guest/registerAccount"
+                        val req = object : VolleyMultipartRequest(
+                            Method.POST,
+                            api,
+                            Response.Listener { response ->
+                                if(!isFinishing){
+                                    finishLoading()
 
-                                val builder = AlertDialog.Builder(this)
-                                builder.setTitle("Account Created")
-                                builder.setMessage("Please go to your mailbox to verify your account.")
-                                builder.setPositiveButton("OK",DialogInterface.OnClickListener{ dialog,_ ->
-                                    dialog.dismiss()
-                                })
-                                builder.setOnDismissListener {
-                                    finish()
+                                    val builder = AlertDialog.Builder(this)
+                                    builder.setTitle("Account Created")
+                                    builder.setMessage("Please go to your mailbox to verify your account.")
+                                    builder.setPositiveButton("OK",DialogInterface.OnClickListener{ dialog,_ ->
+                                        dialog.dismiss()
+                                    })
+                                    builder.setOnDismissListener {
+                                        finish()
+                                    }
+                                    builder.show()
                                 }
-                                builder.show()
-                            }
-                        },
-                        Response.ErrorListener { error ->
-                            finishLoading()
-                            Log.e(TAG, error.stackTraceToString())
-                            if (error is TimeoutError || error is NoConnectionError) {
-                                ToastUtil.initializeToast(applicationContext,"Request timed out. Please try again later.",Toast.LENGTH_LONG).show()
-                            } else if (error is AuthFailureError) {
-                                ToastUtil.initializeToast(applicationContext,"Unexpected error occurred. Please try again later.",Toast.LENGTH_LONG).show()
-                            } else if (error is ServerError) {
-                                ToastUtil.initializeToast(applicationContext,"Unexpected error occurred from server. Please try again later.",Toast.LENGTH_SHORT).show()
-                            } else if (error is NetworkError) {
-                                ToastUtil.initializeToast(applicationContext,"Connection error. Please try again later.",Toast.LENGTH_LONG).show()
-                            } else if (error is ParseError) {
-                                ToastUtil.initializeToast(applicationContext,"Received unexpected response from server. Please try again later.",Toast.LENGTH_SHORT).show()
-                            }
-                            else{
-                                try{
-                                    when (error.networkResponse.statusCode) {
-                                        HttpURLConnection.HTTP_BAD_REQUEST -> {
-                                            ToastUtil.initializeToast(applicationContext,"Unable to process your request. Please try again later.",Toast.LENGTH_SHORT).show()
-                                        }
-                                        HttpURLConnection.HTTP_NOT_FOUND -> {
-                                            ToastUtil.initializeToast(applicationContext,"Unable to locate the service you request. Please try again later.",Toast.LENGTH_SHORT).show()
-                                        }
-                                        HttpURLConnection.HTTP_INTERNAL_ERROR -> {
-                                            ToastUtil.initializeToast(applicationContext,"Unknown error occurred. Please try again later.",Toast.LENGTH_SHORT).show()
-                                        }
-                                        HttpURLConnection.HTTP_UNAUTHORIZED -> {
-                                            ToastUtil.initializeToast(applicationContext,"Account not found. Please try again.",Toast.LENGTH_SHORT).show()
+                            },
+                            Response.ErrorListener { error ->
+                                finishLoading()
+                                Log.e(TAG, error.stackTraceToString())
+                                if (error is TimeoutError || error is NoConnectionError) {
+                                    ToastUtil.initializeToast(applicationContext,"Request timed out. Please try again later.",Toast.LENGTH_LONG).show()
+                                } else if (error is AuthFailureError) {
+                                    ToastUtil.initializeToast(applicationContext,"Unexpected error occurred. Please try again later.",Toast.LENGTH_LONG).show()
+                                } else if (error is ServerError) {
+                                    ToastUtil.initializeToast(applicationContext,"Unexpected error occurred from server. Please try again later.",Toast.LENGTH_SHORT).show()
+                                } else if (error is NetworkError) {
+                                    ToastUtil.initializeToast(applicationContext,"Connection error. Please try again later.",Toast.LENGTH_LONG).show()
+                                } else if (error is ParseError) {
+                                    ToastUtil.initializeToast(applicationContext,"Received unexpected response from server. Please try again later.",Toast.LENGTH_SHORT).show()
+                                }
+                                else{
+                                    try{
+                                        when (error.networkResponse.statusCode) {
+                                            HttpURLConnection.HTTP_BAD_REQUEST -> {
+                                                ToastUtil.initializeToast(applicationContext,"Unable to process your request. Please try again later.",Toast.LENGTH_SHORT).show()
+                                            }
+                                            HttpURLConnection.HTTP_NOT_FOUND -> {
+                                                ToastUtil.initializeToast(applicationContext,"Unable to locate the service you request. Please try again later.",Toast.LENGTH_SHORT).show()
+                                            }
+                                            HttpURLConnection.HTTP_INTERNAL_ERROR -> {
+                                                ToastUtil.initializeToast(applicationContext,"Unknown error occurred. Please try again later.",Toast.LENGTH_SHORT).show()
+                                            }
+                                            HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                                                ToastUtil.initializeToast(applicationContext,"Account not found. Please try again.",Toast.LENGTH_SHORT).show()
+                                            }
                                         }
                                     }
+                                    catch(ex:Exception){
+                                        Log.e(TAG,ex.stackTraceToString())
+                                        ToastUtil.initializeToast(applicationContext,"Unexpected error occurred. Please try again later.",Toast.LENGTH_SHORT).show()
+                                    }
                                 }
-                                catch(ex:Exception){
-                                    Log.e(TAG,ex.stackTraceToString())
-                                    ToastUtil.initializeToast(applicationContext,"Unexpected error occurred. Please try again later.",Toast.LENGTH_SHORT).show()
+                            }) {
+                            override fun getParams(): MutableMap<String, String> {
+                                var params = mutableMapOf<String,String>()
+                                params.putAll(form.toMap())
+                                return params
+                            }
+                            override fun getByteData(): MutableMap<String, FileDataPart> {
+                                var params = HashMap<String, FileDataPart>()
+                                if(form.picture != null){
+                                    params["picture"] = form.picture!!
                                 }
+                                return params
                             }
-                        }) {
-                        override fun getParams(): MutableMap<String, String> {
-                            var params = mutableMapOf<String,String>()
-                            params.putAll(form.toMap())
-                            return params
                         }
-                        override fun getByteData(): MutableMap<String, FileDataPart> {
-                            var params = HashMap<String, FileDataPart>()
-                            if(form.picture != null){
-                                params["picture"] = form.picture!!
-                            }
-                            return params
-                        }
+                        req.retryPolicy = retryPolicy
+                        queueRequest!!.add(req)
                     }
-                    req.retryPolicy = retryPolicy
-                    queueRequest!!.add(req)
                 }
             }
         }
@@ -342,6 +356,25 @@ class RegistrationActivity : AppCompatActivity() {
         var isValid = true
         var firstFocusElement: View? = null
 
+        val fullName = binding.fullNameInput.text.toString()
+        if(fullName.isNullOrEmpty()){
+            binding.fullNameLayout.error = "Please fill-in this field."
+            if(firstFocusElement == null){
+                firstFocusElement = binding.fullNameLayout
+            }
+            isValid = false
+        }
+        else if(!fullName.matches(Regex("^[A-Za-z ]*\$"))){
+            binding.fullNameLayout.error = "Full Name only allow upper case and lower characters with spacing."
+            if(firstFocusElement == null){
+                firstFocusElement = binding.fullNameLayout
+            }
+            isValid = false
+        }
+        else{
+            binding.fullNameLayout.error = null
+        }
+
         val username = binding.usernameInput.text.toString().toLowerCase()
         if(username.isNullOrEmpty()){
             binding.usernameLayout.error = "Please fill-in this field."
@@ -366,62 +399,6 @@ class RegistrationActivity : AppCompatActivity() {
         }
         else{
             binding.usernameLayout.error = null
-        }
-
-        val email = binding.emailInput.text.toString()
-        if(email.isNullOrEmpty()){
-            binding.emailLayout.error = "Please fill-in this field."
-            if(firstFocusElement == null){
-                firstFocusElement = binding.emailLayout
-            }
-            isValid = false
-        }
-        else if(!email.matches("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$".toRegex())){
-            binding.emailLayout.error = "Invalid email format."
-            if(firstFocusElement == null){
-                firstFocusElement = binding.emailLayout
-            }
-            isValid = false
-        }
-        else{
-            binding.emailLayout.error = null
-        }
-
-        val fullName = binding.fullNameInput.text.toString()
-        if(fullName.isNullOrEmpty()){
-            binding.fullNameLayout.error = "Please fill-in this field."
-            if(firstFocusElement == null){
-                firstFocusElement = binding.fullNameLayout
-            }
-            isValid = false
-        }
-        else if(!fullName.matches(Regex("^[A-Za-z ]*\$"))){
-            binding.fullNameLayout.error = "Full Name only allow upper case and lower characters with spacing."
-            if(firstFocusElement == null){
-                firstFocusElement = binding.fullNameLayout
-            }
-            isValid = false
-        }
-        else{
-            binding.fullNameLayout.error = null
-        }
-
-        val password = binding.passwordInput.text.toString()
-        if(password.isNullOrEmpty()){
-            binding.passwordLayout.error = "Please fill-in this field."
-            if(firstFocusElement == null){
-                firstFocusElement = binding.passwordLayout
-            }
-            isValid = false
-        }
-        else if(password.length < Constant.PASSWORD_MIN_LENGTH || password.length > Constant.PASSWORD_MAX_LENGTH){
-            binding.passwordLayout.error = "Password must consist of ${Constant.PASSWORD_MIN_LENGTH}-${Constant.PASSWORD_MAX_LENGTH} Characters."
-            if(firstFocusElement == null){
-                firstFocusElement = binding.passwordLayout
-            }
-            isValid = false
-        }else{
-            binding.passwordLayout.error = null
         }
 
         val timestamp = binding.birthDateInput.tag
@@ -458,6 +435,43 @@ class RegistrationActivity : AppCompatActivity() {
             else{
                 binding.birthDateLayout.error = null
             }
+        }
+
+        val email = binding.emailInput.text.toString()
+        if(email.isNullOrEmpty()){
+            binding.emailLayout.error = "Please fill-in this field."
+            if(firstFocusElement == null){
+                firstFocusElement = binding.emailLayout
+            }
+            isValid = false
+        }
+        else if(!email.matches("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$".toRegex())){
+            binding.emailLayout.error = "Invalid email format."
+            if(firstFocusElement == null){
+                firstFocusElement = binding.emailLayout
+            }
+            isValid = false
+        }
+        else{
+            binding.emailLayout.error = null
+        }
+
+        val password = binding.passwordInput.text.toString()
+        if(password.isNullOrEmpty()){
+            binding.passwordLayout.error = "Please fill-in this field."
+            if(firstFocusElement == null){
+                firstFocusElement = binding.passwordLayout
+            }
+            isValid = false
+        }
+        else if(password.length < Constant.PASSWORD_MIN_LENGTH || password.length > Constant.PASSWORD_MAX_LENGTH){
+            binding.passwordLayout.error = "Password must consist of ${Constant.PASSWORD_MIN_LENGTH}-${Constant.PASSWORD_MAX_LENGTH} Characters."
+            if(firstFocusElement == null){
+                firstFocusElement = binding.passwordLayout
+            }
+            isValid = false
+        }else{
+            binding.passwordLayout.error = null
         }
 
         if(!binding.termButton.isChecked){

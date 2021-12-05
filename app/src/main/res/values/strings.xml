@@ -8,7 +8,7 @@
     <string name="darkModeLabel">Dark Mode</string>
     <string name="aboutusLabel">About Us</string>
     <string name="helpLabel">Help</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_settings">Settings</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
